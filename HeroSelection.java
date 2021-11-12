@@ -74,7 +74,7 @@ public class HeroSelection {
                 "|   |" + Utils.getStringWithNumChar("", 91) + "|    |\n" +
                 "|   | Added heroes have 'P' next to their name, press 'r' to remove them when selected          |    |\n" +
                 "|   |" + Utils.getStringWithNumChar("", 91) + "|    |\n" +
-                "|   | Select at least 1 and at most 3 heroes, press 'q' to quit at any point to exit the game   |    |\n" +
+                "|   | Select 3 heroes, press 'q' to quit at any point to exit the game                          |    |\n" +
                 "|   +-------------------------------------------------------------------------------------------+    |\n" +
                 Utils.getHeroAndControlsString(getCurrentHero(), controls) +
                 "|" + Utils.getStringWithNumChar("", 100) + "|\n" +

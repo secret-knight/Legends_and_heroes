@@ -1,21 +1,47 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-// represents the map of the game, singleton instance
-public class Map {
-    private static Map map;
-
-    private List<Lane> lanes;
+public class Lane {
+    private Tile[][] tiles;
     private Tile currentTile;
     private int currentRow;
     private int currentCol;
     private final int rows = 8;
-    private final int cols = 8;
+    private final int cols = 2;
 
-    private Map() {
-        lanes = new ArrayList<Lane>();
-        for (int i = 0; i < 3; i++)
-            lanes.add(new Lane());
-        System.out.println(this);
+    public Lane() {
+        List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
+        placement.addAll(Collections.nCopies(2, 1));
+        placement.addAll(Collections.nCopies(2, 2));
+        placement.addAll(Collections.nCopies(5, 3));
+        Collections.shuffle(placement);
+        placement.add(0, 4);
+        placement.add(0, 4);
+        placement.add(4);
+        placement.add(4);
+        tiles = new Tile[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                switch (placement.remove(0)) {
+                    case 0:
+                        tiles[i][j] = new Bush();
+                        break;
+                    case 1:
+                        tiles[i][j] = new Koulou();
+                        break;
+                    case 2:
+                        tiles[i][j] = new Cave();
+                        break;
+                    case 3:
+                        tiles[i][j] = new Plain();
+                        break;
+                    default:
+                        tiles[i][j] = new Nexus();
+                        break;
+                }
+            }
+        }
     }
 
 //    public boolean playerPlaced(int i, int j) {
@@ -69,23 +95,14 @@ public class Map {
         this.currentTile = currentTile;
     }
 
-//    public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
+    public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
 
-    public static Map getMap() {
-        if (map == null) {
-            map = new Map();
-        }
-        return map;
-    }
-
-    private String getRowDivider() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("   ");
-        for (int j = 0; j < cols; j++) {
-            stringBuilder.append("+-----");
-        }
-        return stringBuilder.append("+").toString();
-    }
+//    public static Map getMap() {
+//        if (map == null) {
+//            map = new Map();
+//        }
+//        return map;
+//    }
 
 //    public void move() {
 //        boolean moved = false;
@@ -138,7 +155,7 @@ public class Map {
 //            }
 //        }
 //    }
-//
+
 //    public boolean updateMapAfterMoveUp() {
 //        if (getCurrentRow() == 0) {
 //            System.out.println("Can't move player up any further, please provide a valid action.");
@@ -198,61 +215,29 @@ public class Map {
 //            return true;
 //        }
 //    }
-//
 
-    private List<Iterator<String>> getLaneStrIters() {
-        List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
+    public List<String> getString() {
+        List<String> rowsStr = new ArrayList<String>();
+        for (int i = 0, k = 0; i < rows; i++, k += 2) {
+            rowsStr.add(getRowDivider());
+            String s = "";
+            for (int j = 0; j < cols; j++) {
+                s += "|";
+                Tile tile = tiles[i][j];
+                s += tile.toString();
+            }
+            rowsStr.add(s + "|");
+        }
+        rowsStr.add(getRowDivider());
 
-        for (Lane lane : lanes)
-            laneStrIters.add(lane.getString().iterator());
-
-        return laneStrIters;
+        return rowsStr;
     }
 
-    @Override
-    public String toString() {
-
-        String[] controls = new String[]{"                  Controls & Info             |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |w = Move up   | a = Move left  |    |\n",
-                                         "         |s = Move down | d = Move right |    |\n",
-                                         "         |e = Inventory | i = Info       |    |\n",
-                                         "         |q = Quit game |                |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |     You are currently on a    |    |\n",
-                                         "         |                               |    |\n",
-                                         "         |                               |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |           C = Common          |    |\n",
-                                         "         |           M = Market          |    |\n",
-                                         "         |        I = Inaccessible       |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "                                              |\n"};
-
+    private String getRowDivider() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
-                "|                                                MAP                                                 |\n" +
-                "|                                                                                                    |\n");
-
-        List<Iterator<String>> lanesStrIter = getLaneStrIters();
-        int count = 0;
-
-        while (lanesStrIter.get(0).hasNext()) {
-            String line = "";
-            for (int i = 0; i < lanesStrIter.size(); i++) {
-                line += lanesStrIter.get(i).next();
-                if (i != lanesStrIter.size() - 1)
-                    if (count % 2 == 0)
-                        line += "-------";
-                    else
-                        line += new Inaccessible();
-            }
-            count ++;
-            stringBuilder.append("|" + Utils.getStringWithNumChar(line, line.length()+35) + "|\n");
+        for (int j = 0; j < cols; j++) {
+            stringBuilder.append("+-------");
         }
-        stringBuilder.append("|                                                                                                    |\n" +
-                "+----------------------------------------------------------------------------------------------------+");
-
-        return stringBuilder.toString();
+        return stringBuilder.append("+").toString();
     }
 }
