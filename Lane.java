@@ -44,24 +44,24 @@ public class Lane {
         }
     }
 
-//    public boolean playerPlaced(int i, int j) {
-//        Tile t = tiles[i][j];
-//        if (t != Tile.Inaccessible) {
-//            if (currentTile != null) {
-//                tiles[currentRow][currentCol] = currentTile;
-//            }
-//            currentTile = t;
-//            currentRow = i;
-//            currentCol = j;
-//            if (t == Tile.Market) {
+    public boolean playerPlaced(int i, int j) {
+        Tile t = tiles[i][j];
+        if (!(t instanceof Inaccessible)) {
+            if (currentTile != null) {
+                tiles[currentRow][currentCol] = currentTile;
+            }
+            currentTile = t;
+            currentRow = i;
+            currentCol = j;
+//            if (t instanceof Nexus) {
 //                tiles[i][j] = Tile.OccupiedMarket;
 //            } else {
 //                tiles[i][j] = Tile.OccupiedCommon;
 //            }
-//            return true;
-//        }
-//        return false;
-//    }
+            return true;
+        }
+        return false;
+    }
 
     public int getCurrentRow() {
         return currentRow;
@@ -104,117 +104,117 @@ public class Lane {
 //        return map;
 //    }
 
-//    public void move() {
-//        boolean moved = false;
-//        boolean closed = false;
-//
-//        while (!closed && !Player.getPlayer().isGameOver()) {
-//            System.out.println(this);
-//            String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
-//            switch (action) {
-//                case "e":
-//                    Inventory.enterInventoryScreen(null, true);
-//                    break;
-//                case "k":
-//                    if (getCurrentTile() != Tile.Market)
-//                        System.out.println("Can't enter market, you are not on a market tile.");
-//                    else {
-//                        Market market = new Market(Player.getPlayer().getMaxHeroLevel());
-//                        market.enterMarket();
-//                    }
-//                    break;
-//                case "w":
-//                    moved = updateMapAfterMoveUp();
-//                    closed = true;
-//                    break;
-//                case "s":
-//                    moved = updateMapAfterMoveDown();
-//                    closed = true;
-//                    break;
-//                case "a":
-//                    moved = updateMapAfterMoveLeft();
-//                    closed = true;
-//                    break;
-//                case "d":
-//                    moved = updateMapAfterMoveRight();
-//                    closed = true;
-//                    break;
-//                case "i":
-//                    Player.getPlayer().enterInfoScreen();
-//                    break;
-//                default:
-//                    System.out.println("Game ended");
-//                    Player.getPlayer().setGameOver(true);
-//                    break;
-//            }
-//        }
-//        if (moved && getCurrentTile() == Tile.Common) {
-//            if (Utils.rand.nextFloat() > 0.5) {
-//                Fight fight = new Fight(Player.getPlayer().getHeroes());
-//                fight.commenceFight();
-//            }
-//        }
-//    }
+    public void move() {
+        boolean moved = false;
+        boolean closed = false;
 
-//    public boolean updateMapAfterMoveUp() {
-//        if (getCurrentRow() == 0) {
-//            System.out.println("Can't move player up any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow()-1, getCurrentCol()) == Tile.Inaccessible) {
-//            System.out.println("Can't move up, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow() - 1, getCurrentCol());
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveDown() {
-//        if (getCurrentRow() == getRows() - 1) {
-//            System.out.println("Can't move player down any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow()+1, getCurrentCol()) == Tile.Inaccessible) {
-//            System.out.println("Can't move down, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow() + 1, getCurrentCol());
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveLeft() {
-//        if (getCurrentCol() == 0) {
-//            System.out.println("Can't move player left any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (map.getSpecificTile(getCurrentRow(), getCurrentCol()-1) == Tile.Inaccessible) {
-//            System.out.println("Can't move left, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            map.playerPlaced(getCurrentRow(), getCurrentCol() - 1);
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveRight() {
-//        if (getCurrentCol() == getCols() - 1) {
-//            System.out.println("Can't move player right any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow(), getCurrentCol() + 1) == Tile.Inaccessible) {
-//            System.out.println("Can't move right, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow(), getCurrentCol() + 1);
-//            return true;
-//        }
-//    }
+        while (!closed && !Player.getPlayer().isGameOver()) {
+            System.out.println(this); // change to view.showMap();
+            String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
+            switch (action) {
+                case "e":
+                    Inventory.enterInventoryScreen(null, true);
+                    break;
+                case "k":
+                    if (!(getCurrentTile() instanceof Nexus))
+                        System.out.println("Can't enter market, you are not on a market tile.");
+                    else {
+                        Market market = new Market(Player.getPlayer().getMaxHeroLevel());
+                        market.enterMarket();
+                    }
+                    break;
+                case "w":
+                    moved = updateMapAfterMoveUp();
+                    closed = true;
+                    break;
+                case "s":
+                    moved = updateMapAfterMoveDown();
+                    closed = true;
+                    break;
+                case "a":
+                    moved = updateMapAfterMoveLeft();
+                    closed = true;
+                    break;
+                case "d":
+                    moved = updateMapAfterMoveRight();
+                    closed = true;
+                    break;
+                case "i":
+                    Player.getPlayer().enterInfoScreen();
+                    break;
+                default:
+                    System.out.println("Game ended");
+                    Player.getPlayer().setGameOver(true);
+                    break;
+            }
+        }
+        if (moved && (getCurrentTile() instanceof Plain)) {
+            if (Utils.rand.nextFloat() > 0.5) {
+                Fight fight = new Fight(Player.getPlayer().getHeroes());
+                fight.commenceFight();
+            }
+        }
+    }
+
+    public boolean updateMapAfterMoveUp() {
+        if (getCurrentRow() == 0) {
+            System.out.println("Can't move player up any further, please provide a valid action.");
+            return false;
+        }
+        else if (getSpecificTile(getCurrentRow()-1, getCurrentCol()) instanceof Inaccessible) {
+            System.out.println("Can't move up, tile is inaccessable, please choose a different path.");
+            return false;
+        }
+        else {
+            playerPlaced(getCurrentRow() - 1, getCurrentCol());
+            return true;
+        }
+    }
+
+    public boolean updateMapAfterMoveDown() {
+        if (getCurrentRow() == getRows() - 1) {
+            System.out.println("Can't move player down any further, please provide a valid action.");
+            return false;
+        }
+        else if (getSpecificTile(getCurrentRow()+1, getCurrentCol()) instanceof Inaccessible) {
+            System.out.println("Can't move down, tile is inaccessable, please choose a different path.");
+            return false;
+        }
+        else {
+            playerPlaced(getCurrentRow() + 1, getCurrentCol());
+            return true;
+        }
+    }
+
+    public boolean updateMapAfterMoveLeft() {
+        if (getCurrentCol() == 0) {
+            System.out.println("Can't move player left any further, please provide a valid action.");
+            return false;
+        }
+        else if (getSpecificTile(getCurrentRow(), getCurrentCol()-1) instanceof Inaccessible) {
+            System.out.println("Can't move left, tile is inaccessable, please choose a different path.");
+            return false;
+        }
+        else {
+            playerPlaced(getCurrentRow(), getCurrentCol() - 1);
+            return true;
+        }
+    }
+
+    public boolean updateMapAfterMoveRight() {
+        if (getCurrentCol() == getCols() - 1) {
+            System.out.println("Can't move player right any further, please provide a valid action.");
+            return false;
+        }
+        else if (getSpecificTile(getCurrentRow(), getCurrentCol() + 1) instanceof Inaccessible) {
+            System.out.println("Can't move right, tile is inaccessable, please choose a different path.");
+            return false;
+        }
+        else {
+            playerPlaced(getCurrentRow(), getCurrentCol() + 1);
+            return true;
+        }
+    }
 
     public List<String> getString() {
         List<String> rowsStr = new ArrayList<String>();
