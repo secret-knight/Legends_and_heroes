@@ -45,3 +45,4 @@
 /WeaponFactory.class
 .project
 .classpath
+*.class
