@@ -4,17 +4,18 @@ import java.util.*;
 public class Map {
     private static Map map;
 
-    private List<Lane> lanes;
+    private LaneCollection laneCollection;
     private Tile currentTile;
     private int currentRow;
     private int currentCol;
     private final int rows = 8;
     private final int cols = 8;
+    private static final int NUMOFLANE = 3;
 
     private Map() {
-        lanes = new ArrayList<Lane>();
-        for (int i = 0; i < 3; i++)
-            lanes.add(new Lane());
+        laneCollection = new LaneCollection();
+        for (int i = 0; i < NUMOFLANE; i++)
+            laneCollection.add(new Lane(Player.getPlayer().getHeroes().get(i)));
         System.out.println(this);
     }
 
@@ -87,123 +88,28 @@ public class Map {
         return stringBuilder.append("+").toString();
     }
 
-//    public void move() {
-//        boolean moved = false;
-//        boolean closed = false;
-//
-//        while (!closed && !Player.getPlayer().isGameOver()) {
-//            System.out.println(this);
-//            String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
-//            switch (action) {
-//                case "e":
-//                    Inventory.enterInventoryScreen(null, true);
-//                    break;
-//                case "k":
-//                    if (getCurrentTile() != Tile.Market)
-//                        System.out.println("Can't enter market, you are not on a market tile.");
-//                    else {
-//                        Market market = new Market(Player.getPlayer().getMaxHeroLevel());
-//                        market.enterMarket();
-//                    }
-//                    break;
-//                case "w":
-//                    moved = updateMapAfterMoveUp();
-//                    closed = true;
-//                    break;
-//                case "s":
-//                    moved = updateMapAfterMoveDown();
-//                    closed = true;
-//                    break;
-//                case "a":
-//                    moved = updateMapAfterMoveLeft();
-//                    closed = true;
-//                    break;
-//                case "d":
-//                    moved = updateMapAfterMoveRight();
-//                    closed = true;
-//                    break;
-//                case "i":
-//                    Player.getPlayer().enterInfoScreen();
-//                    break;
-//                default:
-//                    System.out.println("Game ended");
-//                    Player.getPlayer().setGameOver(true);
-//                    break;
-//            }
-//        }
-//        if (moved && getCurrentTile() == Tile.Common) {
-//            if (Utils.rand.nextFloat() > 0.5) {
-//                Fight fight = new Fight(Player.getPlayer().getHeroes());
-//                fight.commenceFight();
-//            }
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveUp() {
-//        if (getCurrentRow() == 0) {
-//            System.out.println("Can't move player up any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow()-1, getCurrentCol()) == Tile.Inaccessible) {
-//            System.out.println("Can't move up, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow() - 1, getCurrentCol());
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveDown() {
-//        if (getCurrentRow() == getRows() - 1) {
-//            System.out.println("Can't move player down any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow()+1, getCurrentCol()) == Tile.Inaccessible) {
-//            System.out.println("Can't move down, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow() + 1, getCurrentCol());
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveLeft() {
-//        if (getCurrentCol() == 0) {
-//            System.out.println("Can't move player left any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (map.getSpecificTile(getCurrentRow(), getCurrentCol()-1) == Tile.Inaccessible) {
-//            System.out.println("Can't move left, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            map.playerPlaced(getCurrentRow(), getCurrentCol() - 1);
-//            return true;
-//        }
-//    }
-//
-//    public boolean updateMapAfterMoveRight() {
-//        if (getCurrentCol() == getCols() - 1) {
-//            System.out.println("Can't move player right any further, please provide a valid action.");
-//            return false;
-//        }
-//        else if (getSpecificTile(getCurrentRow(), getCurrentCol() + 1) == Tile.Inaccessible) {
-//            System.out.println("Can't move right, tile is inaccessable, please choose a different path.");
-//            return false;
-//        }
-//        else {
-//            playerPlaced(getCurrentRow(), getCurrentCol() + 1);
-//            return true;
-//        }
-//    }
-//
+    public void move() {
+        // since laneCollection.getNext() is infinite rotate, 
+        // e.g: 0 -> 1 -> 2 -> 3 -> 0 -> 1
+        // we need to count from 0 to collection.size();
+
+        // hero move
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            this.laneCollection.getNext().move();
+        }
+        
+        // monster move;
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            this.laneCollection.getNext().moveMonster();
+        }
+    }
 
     private List<Iterator<String>> getLaneStrIters() {
         List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
 
-        for (Lane lane : lanes)
+        for (Lane lane : laneCollection.getLaneList())
             laneStrIters.add(lane.getString().iterator());
 
         return laneStrIters;

@@ -6,8 +6,8 @@ public class Main {
         Map m = Map.getMap();
 
         // play game
-//        while (!p.isGameOver()) {
-//            m.move();
-//        }
+        while (!p.isGameOver()) {
+            m.move();
+        }
     }
 }

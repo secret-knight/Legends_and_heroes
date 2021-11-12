@@ -61,7 +61,7 @@ public class Player {
                         hs.setCurrentlySelected(hs.getCurrentlySelected()+1);
                     break;
                 case "c":
-                    if (heroes.size() == 3)
+                    if (heroes.size() != 3)
                         System.out.println("Can't embark yet, must have 3 heroes.");
                     else
                         embark = true;
