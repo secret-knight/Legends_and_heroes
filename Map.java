@@ -15,7 +15,7 @@ public class Map {
     private Map() {
         laneCollection = new LaneCollection();
         for (int i = 0; i < NUMOFLANE; i++)
-            laneCollection.add(new Lane());
+            laneCollection.add(new Lane(Player.getPlayer().getHeroes().get(i)));
         System.out.println(this);
     }
 

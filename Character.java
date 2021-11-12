@@ -48,4 +48,17 @@ public abstract class Character implements Fightable{
     {
         this.buffedAtt = buffedAtt;
     }
+    
+    @Override
+    public boolean equals(Object another)
+    {
+        boolean res = false;
+        if(another instanceof Character)
+        {
+            res = this.getName().equals(((Character)another).getName()) && 
+                    this.getHp() == ((Character)another).getHp() && 
+                    this.getLevel() == ((Character)another).getLevel(); 
+        }
+        return res;
+    }
 }

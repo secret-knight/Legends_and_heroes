@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Tile {
-    private Character character;
+    private List<Character> characters = new ArrayList<Character>();;
     private Attribute buffAttribute; 
     private String symbol;
     private int buffIncrPcnt;
@@ -18,7 +21,7 @@ public abstract class Tile {
     }
     public Tile(Character character, Attribute buffAttribute, int buffIncrPcnt, String symbol)
     {
-        this.setCharacter(character);
+        this.addCharacter(character);
         this.setBuffAttribute(buffAttribute);
         this.setBuffIncrPcnt(buffIncrPcnt);
         this.setSymbol(symbol);
@@ -30,37 +33,44 @@ public abstract class Tile {
      */
     public boolean isEmpty()
     {
-        return this.getCharacter() == null;
+        return this.getCharacters().isEmpty();
     }
     
-    public Character getCharacter()
+    public List<Character> getCharacters()
     {
-        return character;
+        return characters;
     }
-
-    public void moveCharacterFrom(Tile tile)
+    
+    public void moveCharacterFrom(Tile from, Character character)
     {
-        this.setCharacter(tile.getCharacter());
-        tile.removeCharacter();
+        if(from != null)
+        {
+            from.removeCharacter(character);
+        }
+        this.addCharacter(character);
     }
-    public void setCharacter(Character character)
+    public void addCharacter(Character character)
     {
+        if(character == null)
+        {
+            return;
+        }
         // only hero can get buff
         if(character instanceof Hero && getBuffAttribute() != null)
         {
             character.applyBuff(getBuffAttribute(), getBuffIncrPcnt());
         }
-        this.character = character;
+        this.characters.add(character);
     }
     
-    public void removeCharacter()
+    public void removeCharacter(Character character)
     {
         if(this.buffAttribute != null)
         {
             this.buffAttribute = null;
             this.buffIncrPcnt  = 0;
         }
-        this.character = null;
+        this.characters.remove(character);
     }
     
     public Attribute getBuffAttribute()
@@ -81,7 +91,7 @@ public abstract class Tile {
     }
     public String getSymbol()
     {
-        if(getCharacter() == null)
+        if(getCharacters().isEmpty())
         {
             return symbol;
         }
