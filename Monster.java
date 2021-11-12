@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // class that represents Monsters of the game, much less functionality than heroes
-public abstract class Monster extends Character{
+public abstract class Monster extends Character {
     private int damage;
     private int defense;
     private int dodgeChance;
