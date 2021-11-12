@@ -92,11 +92,18 @@ public class Map {
         // since laneCollection.getNext() is infinite rotate, 
         // e.g: 0 -> 1 -> 2 -> 3 -> 0 -> 1
         // we need to count from 0 to collection.size();
+
+        // hero move
         for(int i = 0; i < this.laneCollection.size(); i++)
         {
             this.laneCollection.getNext().move();
         }
-       
+        
+        // monster move;
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            this.laneCollection.getNext().moveMonster();
+        }
     }
 
     private List<Iterator<String>> getLaneStrIters() {

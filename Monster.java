@@ -77,6 +77,22 @@ public abstract class Monster extends Character {
     public int getDodgeChance() {
         return dodgeChance;
     }
+    
+    @Override
+    public void applyBuff(Attribute att, int pcnt)
+    {
+        // do nothing
+    }
+
+    public void removeBuff(Attribute att)
+    {
+        // do nothing
+    }
+
+    public void removeBuff(Attribute att, int pcnt)
+    {
+        // do nothing
+    }
 
     public List<String> getString() {
         List<String> s = new ArrayList<String>();

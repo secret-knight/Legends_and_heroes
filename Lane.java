@@ -7,6 +7,8 @@ public class Lane {
     private Tile currentTile;
     private int currentRow;
     private int currentCol;
+    private int monsterRow;
+    private int monsterCol;
     private final int rows = 8;
     private final int cols = 2;
 
@@ -47,12 +49,11 @@ public class Lane {
     public boolean playerPlaced(int i, int j) {
         Tile t = tiles[i][j];
         if (!(t instanceof Inaccessible)) {
-            if (currentTile != null) {
-                tiles[currentRow][currentCol] = currentTile;
-            }
+            t.moveCharacterFrom(tiles[i][j]);
             currentTile = t;
             currentRow = i;
             currentCol = j;
+            //TODO temp comment out
 //            if (t instanceof Nexus) {
 //                tiles[i][j] = Tile.OccupiedMarket;
 //            } else {
@@ -79,6 +80,26 @@ public class Lane {
         this.currentCol = currentCol;
     }
 
+    public int getMonsterRow()
+    {
+        return monsterRow;
+    }
+
+    public void setMonsterRow(int monsterRow)
+    {
+        this.monsterRow = monsterRow;
+    }
+
+    public int getMonsterCol()
+    {
+        return monsterCol;
+    }
+
+    public void setMonsterCol(int monsterCol)
+    {
+        this.monsterCol = monsterCol;
+    }
+
     public int getRows() {
         return rows;
     }
@@ -97,19 +118,12 @@ public class Lane {
 
     public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
 
-//    public static Map getMap() {
-//        if (map == null) {
-//            map = new Map();
-//        }
-//        return map;
-//    }
-
     public void move() {
         boolean moved = false;
         boolean closed = false;
 
         while (!closed && !Player.getPlayer().isGameOver()) {
-            System.out.println(this); // change to view.showMap();
+            System.out.println(Map.getMap());
             String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
             switch (action) {
                 case "e":
@@ -155,7 +169,19 @@ public class Lane {
             }
         }
     }
-
+    
+    /**
+     * move monster
+     */
+    public void moveMonster()
+    {
+        moveMonsterForward();
+    }
+    
+    public void moveMonsterForward()
+    {
+        //TODO
+    }
     public boolean updateMapAfterMoveUp() {
         if (getCurrentRow() == 0) {
             System.out.println("Can't move player up any further, please provide a valid action.");

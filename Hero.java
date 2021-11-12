@@ -60,15 +60,36 @@ public abstract class Hero extends Character {
     }
 
     public int getStrength() {
-        return strength;
+        if(getBuffedAttributes().containsKey(Attribute.STRENGTH))
+        {
+            return strength * (1 + getBuffedAttributes().get(Attribute.STRENGTH));
+        }
+        else
+        {
+            return strength;
+        }
     }
 
     public int getDexterity() {
-        return dexterity;
+        if(getBuffedAttributes().containsKey(Attribute.DEXTERITY))
+        {
+            return dexterity * (1 + getBuffedAttributes().get(Attribute.DEXTERITY));
+        }
+        else
+        {
+            return dexterity;
+        }
     }
 
     public int getAgility() {
-        return agility;
+        if(getBuffedAttributes().containsKey(Attribute.AGILITY))
+        {
+            return agility * (1 + getBuffedAttributes().get(Attribute.AGILITY));
+        }
+        else
+        {
+            return agility;
+        }
     }
 
     public void setStrength(int strength) {
@@ -211,6 +232,34 @@ public abstract class Hero extends Character {
         }
         else
             return false;
+    }
+    
+    @Override
+    public void applyBuff(Attribute att, int pcnt)
+    {
+        if(!getBuffedAttributes().containsKey(att))
+        {
+            getBuffedAttributes().put(att, 0);
+        }
+        getBuffedAttributes().put(att, getBuffedAttributes().get(att) + pcnt);
+    }
+    
+    public void removeBuff(Attribute att)
+    {
+        getBuffedAttributes().remove(att);
+    }
+    
+    public void removeBuff(Attribute att, int pcnt)
+    {
+        int res = getBuffedAttributes().get(att) - pcnt;
+        if(res <= 0)
+        {
+            removeBuff(att);
+        }
+        else
+        {
+            getBuffedAttributes().put(att, res);
+        }
     }
 
     public Weapon getWeapon() {
