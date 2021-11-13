@@ -1,3 +1,6 @@
+/**
+ * plain cell that has no buff attr
+ */
 public class Plain extends Tile{
     private final static String marker = "P";
     public Plain(Character character) {

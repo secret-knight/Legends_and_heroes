@@ -93,13 +93,16 @@ public class Map {
         // e.g: 0 -> 1 -> 2 -> 3 -> 0 -> 1
         // we need to count from 0 to collection.size();
 
-        // hero move
+        // hero move, attack a monster
         for(int i = 0; i < this.laneCollection.size(); i++)
         {
             this.laneCollection.getNext().move();
         }
         
-        // monster move;
+        // monster tern
+        // at every round each monster either attack a hero
+        // or 
+        // move one cell "forward"
         for(int i = 0; i < this.laneCollection.size(); i++)
         {
             this.laneCollection.getNext().moveMonster();

@@ -1,3 +1,6 @@
+/**
+ * Koulou cell that has 10% strength buff
+ */
 public class Koulou extends Tile{
     private final static Attribute attr    = Attribute.STRENGTH;
     private final static int       attPcnt = 10;

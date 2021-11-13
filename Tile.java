@@ -1,12 +1,17 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * abstract class that for Tile
+ * Contains max 2 and must be different characters 
+ */
 public abstract class Tile {
-    private List<Character> characters = new ArrayList<Character>();;
-    private Attribute buffAttribute; 
-    private String symbol;
-    private int buffIncrPcnt;
+    private List<Character> characters    = new ArrayList<Character>();
+    private Attribute       buffAttribute; 
+    private int             buffIncrPcnt;
+    private String          symbol;
     
+    // constructors 
     public Tile(String symbol)
     {
         this(null, null, 0, symbol);
@@ -36,19 +41,65 @@ public abstract class Tile {
         return this.getCharacters().isEmpty();
     }
     
-    public List<Character> getCharacters()
+    /**
+     * move character from another tile to current tile
+     * 
+     * @param from      Tile that come from
+     * @param character character that moving
+     * @return          move successful or not
+     */
+    public boolean moveCharacterFrom(Tile from, Character character)
     {
-        return characters;
-    }
-    
-    public void moveCharacterFrom(Tile from, Character character)
-    {
+        // check if we can add character to current tile
+        // - we can only has max 2 character and they must not belongs to different party
+        // check if we can move the character
+        // - we can not move heros and monsters pass through each other
+        if(!canAddCharacter(character))
+        {
+            return false;
+        }
         if(from != null)
         {
             from.removeCharacter(character);
         }
         this.addCharacter(character);
+        return true;
     }
+    
+    /**
+     * check if we can add another character to current tile
+     * @param character
+     * @return
+     */
+    private boolean canAddCharacter(Character character)
+    {
+        // if empty
+        if(this.isEmpty())
+        {
+            return true;
+        }
+        
+        // if not empty
+        // should only be able to add another one 
+        // is the one that different that existing one
+        // using exclusive-or (^) operation to check whether they are same kind
+        if(this.characters.size() < 2)
+        {
+            return (characters.get(0) instanceof Hero) ^ (characters instanceof Hero);
+        }
+        return false;
+    }
+    
+    /**
+     * add character to current Tile
+     * 
+     * Hero Monster
+     * or
+     * Monster Hero
+     * 
+     * no same type of character in one Tile
+     * @param character to be added
+     */
     public void addCharacter(Character character)
     {
         if(character == null)
@@ -63,16 +114,21 @@ public abstract class Tile {
         this.characters.add(character);
     }
     
+    /**
+     * remove character from current tile
+     * remove their buff
+     * @param character
+     */
     public void removeCharacter(Character character)
     {
-        if(this.buffAttribute != null)
+        if(character.getBuffedAttributes().containsKey(getBuffAttribute()))
         {
-            this.buffAttribute = null;
-            this.buffIncrPcnt  = 0;
+            character.removeBuff(getBuffAttribute(), getBuffIncrPcnt());
         }
         this.characters.remove(character);
     }
     
+    // getters and setters
     public Attribute getBuffAttribute()
     {
         return buffAttribute;
@@ -89,6 +145,20 @@ public abstract class Tile {
     {
         this.buffIncrPcnt = buffIncrPcnt;
     }
+    public void setSymbol(String symbol)
+    {
+        this.symbol = symbol;
+    }
+    /**
+     * characters getter
+     * @return 
+     */
+    public List<Character> getCharacters()
+    {
+        return characters;
+    }
+    
+    // toString
     public String getSymbol()
     {
         if(getCharacters().isEmpty())
@@ -97,12 +167,30 @@ public abstract class Tile {
         }
         else
         {
-            return "H";
+            // if contains only 1 character, return their symbol
+            if(getCharacters().size() == 1)
+            {
+                if(getCharacters().get(0) instanceof Hero)
+                {
+                    return "H";
+                }
+                else
+                {
+                    return "M";
+                }
+            }
+            // if contains 2 return a combo
+            else 
+            {
+                if(getCharacters().get(0) instanceof Hero)
+                {
+                    return "H M";
+                }
+                else
+                {
+                    return "M H";
+                }
+            }
         }
     }
-    public void setSymbol(String symbol)
-    {
-        this.symbol = symbol;
-    }
-    
 }

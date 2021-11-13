@@ -1,3 +1,6 @@
+/**
+ * nexus cell 
+ */
 public class Nexus extends Tile{
     private final static String    marker  = "N";
     public Nexus(Character character) {

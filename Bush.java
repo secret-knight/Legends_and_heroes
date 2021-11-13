@@ -1,3 +1,6 @@
+/**
+ * bush cell that has 10% dexterity buff
+ */
 public class Bush extends Tile{
     private final static Attribute attr    = Attribute.DEXTERITY;
     private final static int       attPcnt = 10;
