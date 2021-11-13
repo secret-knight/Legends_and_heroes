@@ -1,3 +1,6 @@
+/**
+ * inaccessible cell
+ */
 public class Inaccessible extends Tile{
     private final static String    marker  = "I";
     public Inaccessible(Character character) {

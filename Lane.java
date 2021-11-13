@@ -56,15 +56,41 @@ public class Lane {
         return placeHero(dest, dest, hero);
     }
     
-    //
+    
+    /**
+     * move hero from original Tile to another one
+     * 
+     * @param from Coordinate of original
+     * @param to   destination Tile
+     * @param hero hero that moving
+     * @return     whether is move applicable or not
+     */
     public boolean placeHero(Coordinate from, Coordinate to, Hero hero) {
         Tile t = tiles[to.getRow()][to.getCol()];
-        if (!(t instanceof Inaccessible)) {
-            t.moveCharacterFrom(tiles[from.getRow()][from.getCol()], hero);
-            getHeros().put(hero, to);
-            return true;
+        // check if we can move the character
+        // - can not move to inaccessible tile
+        // - can not move heros and monsters pass through each other
+        // - can not move out lane
+        if (!(t instanceof Inaccessible) && canMoveCharacter(to, hero)) {
+            boolean isMovable = t.moveCharacterFrom(tiles[from.getRow()][from.getCol()], hero);
+            if(isMovable)
+            {
+                getHeros().put(hero, to);
+            }
+            return isMovable;
         }
         return false;
+    }
+    
+    /**
+     * check if we can move the character to current tile
+     * @param character
+     * @return
+     */
+    private boolean canMoveCharacter(Coordinate to, Character character)
+    {
+        // TODO Auto-generated method stub
+        return true;
     }
 
     public int getRows() {
@@ -81,11 +107,11 @@ public class Lane {
         // iterate each hero, move each of them in current lane
         for(Entry<Hero, Coordinate> entry : heros.entrySet())
         {
-            boolean    moved        = false;
-            boolean    closed       = false;
-            Hero       hero         = entry.getKey();
-            Coordinate cord         = entry.getValue();
-            Tile       currentTile  = getSpecificTile(cord.getRow(), cord.getCol());
+            boolean    moved       = false;
+            boolean    closed      = false;
+            Hero       hero        = entry.getKey();
+            Coordinate cord        = entry.getValue();
+            Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
             while (!closed && !Player.getPlayer().isGameOver()) {
                 System.out.println(Map.getMap());
                 String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
@@ -151,6 +177,7 @@ public class Lane {
     {
         //TODO
     }
+    
     public boolean updateMapAfterMoveUp(int row, int col, Hero hero) {
         if (row == 0) {
             System.out.println("Can't move player up any further, please provide a valid action.");
@@ -161,8 +188,7 @@ public class Lane {
             return false;
         }
         else {
-            placeHero(new Coordinate(row, col), new Coordinate(row - 1, col), hero);
-            return true;
+            return placeHero(new Coordinate(row, col), new Coordinate(row - 1, col), hero);
         }
     }
 
@@ -176,8 +202,7 @@ public class Lane {
             return false;
         }
         else {
-            placeHero(new Coordinate(row, col), new Coordinate(row + 1, col), hero);
-            return true;
+            return placeHero(new Coordinate(row, col), new Coordinate(row + 1, col), hero);
         }
     }
 
@@ -191,8 +216,7 @@ public class Lane {
             return false;
         }
         else {
-            placeHero(new Coordinate(row, col), new Coordinate(row, col - 1), hero);
-            return true;
+            return placeHero(new Coordinate(row, col), new Coordinate(row, col - 1), hero);
         }
     }
 
@@ -206,8 +230,7 @@ public class Lane {
             return false;
         }
         else {
-            placeHero(new Coordinate(row, col), new Coordinate(row, col + 1), hero);
-            return true;
+            return placeHero(new Coordinate(row, col), new Coordinate(row, col + 1), hero);
         }
     }
 

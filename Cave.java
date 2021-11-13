@@ -1,3 +1,6 @@
+/**
+ * Cave cell that has 10% agility buff
+ */
 public class Cave extends Tile{
     private final static Attribute attr    = Attribute.AGILITY;
     private final static int       attPcnt = 10;
