@@ -85,7 +85,7 @@ public abstract class Tile {
         // using exclusive-or (^) operation to check whether they are same kind
         if(this.characters.size() < 2)
         {
-            return (characters.get(0) instanceof Hero) ^ (characters instanceof Hero);
+            return (characters.get(0) instanceof Hero) ^ (character instanceof Hero);
         }
         return false;
     }
