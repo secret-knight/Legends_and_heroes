@@ -2,19 +2,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Comparator;
 
 public class Lane {
     private Tile[][] tiles;
-    private HashMap<Hero, Coordinate>    heros;
-    private HashMap<Monster, Coordinate> monsters;
+    private CharacterLocationManager<Hero>    herosLocationManager;
+    private CharacterLocationManager<Monster> monstersLocationManager;
     private final int rows = 8;
     private final int cols = 2;
 
     public Lane(Hero hero) {
         List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
-        this.heros = new HashMap<>();
-        this.monsters = new HashMap<>();
+        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows));
+        this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0));
         placement.addAll(Collections.nCopies(2, 1));
         placement.addAll(Collections.nCopies(2, 2));
         placement.addAll(Collections.nCopies(5, 3));
@@ -45,37 +49,51 @@ public class Lane {
                 }
             }
         }
-        heroPlaced(rows - 1, 0, hero);
-        this.addHero(rows - 1, 0, hero);
+        characterPlaced(rows - 1, 0, hero);
+        getHerosLocationManager().add(hero, new Coordinate(rows - 1, 0));
+        
+        // copied from Fight.java
+        MonsterFactory monsterFactory = new MonsterFactory();
+        Monster monster = (Monster) monsterFactory.createCharacter(hero.getLevel());
+        characterPlaced(0, 0, monster);
+        getMonstersLocationManager().add(monster, new Coordinate(0, 0));
+        
     }
 
     // change playerPlaced to heroPlaced
-    public boolean heroPlaced(int row, int col, Hero hero)
+    public boolean characterPlaced(int row, int col, Character character)
     {
         Coordinate dest = new Coordinate(row, col);
-        return placeHero(dest, dest, hero);
+        return placeCharacter(dest, dest, character);
     }
     
     
     /**
      * move hero from original Tile to another one
      * 
-     * @param from Coordinate of original
-     * @param to   destination Tile
-     * @param hero hero that moving
-     * @return     whether is move applicable or not
+     * @param from      Coordinate of original
+     * @param to        destination Tile
+     * @param character hero that moving
+     * @return          whether is move applicable or not
      */
-    public boolean placeHero(Coordinate from, Coordinate to, Hero hero) {
+    public boolean placeCharacter(Coordinate from, Coordinate to, Character character) {
         Tile t = tiles[to.getRow()][to.getCol()];
         // check if we can move the character
         // - can not move to inaccessible tile
         // - can not move heros and monsters pass through each other
         // - can not move out lane
-        if (!(t instanceof Inaccessible) && canMoveCharacter(to, hero)) {
-            boolean isMovable = t.moveCharacterFrom(tiles[from.getRow()][from.getCol()], hero);
+        if (!(t instanceof Inaccessible) && canMoveCharacter(character, to)) {
+            boolean isMovable = t.moveCharacterFrom(tiles[from.getRow()][from.getCol()], character);
             if(isMovable)
             {
-                getHeros().put(hero, to);
+                if(character instanceof Hero)
+                {
+                    getHerosLocationManager().updateLocation((Hero)character, to);
+                }
+                else
+                {
+                    getMonstersLocationManager().updateLocation((Monster)character, to);
+                }
             }
             return isMovable;
         }
@@ -87,10 +105,19 @@ public class Lane {
      * @param character
      * @return
      */
-    private boolean canMoveCharacter(Coordinate to, Character character)
+    private boolean canMoveCharacter(Character character, Coordinate to)
     {
-        // TODO Auto-generated method stub
-        return true;
+        // check if pass through front monster
+        int heroFurthestRow    = getHerosLocationManager().getFurthermostDistance();
+        int monsterFurthestRow = getMonstersLocationManager().getFurthermostDistance();
+        if(heroFurthestRow +  monsterFurthestRow > (this.rows - 1))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     public int getRows() {
@@ -105,11 +132,11 @@ public class Lane {
 
     public void move() {
         // iterate each hero, move each of them in current lane
-        for(Entry<Hero, Coordinate> entry : heros.entrySet())
+        for(Entry<Hero, Coordinate> entry : getHerosLocationManager().getEntrySet())
         {
             boolean    moved       = false;
             boolean    closed      = false;
-            Hero       hero        = entry.getKey();
+            Hero       hero        = (Hero)entry.getKey();
             Coordinate cord        = entry.getValue();
             Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
             while (!closed && !Player.getPlayer().isGameOver()) {
@@ -154,13 +181,13 @@ public class Lane {
             }
             if (moved) {
                 // update currentTile
-                cord = getHeros().get(hero); 
+                cord = getHerosLocationManager().getCharacterCoordinate(hero); 
                 currentTile = getSpecificTile(cord.getRow(), cord.getCol());
                 // check if plain and need to fight monster
-                if ((currentTile instanceof Plain) && Utils.rand.nextFloat() > 0.5) {
-                    Fight fight = new Fight(Player.getPlayer().getHeroes());
-                    fight.commenceFight();
-                }
+//                if ((currentTile instanceof Plain) && Utils.rand.nextFloat() > 0.5) {
+//                    Fight fight = new Fight(Player.getPlayer().getHeroes());
+//                    fight.commenceFight();
+//                }
             }
         }
     }
@@ -173,12 +200,21 @@ public class Lane {
         moveMonsterForward();
     }
     
+    /**
+     * move monster downwards 
+     */
     public void moveMonsterForward()
     {
-        //TODO
+        Iterator<Monster> ite = getMonstersLocationManager().iterator();
+        while(ite.hasNext())
+        {
+            Monster    monster = ite.next();
+            Coordinate cord    = getMonstersLocationManager().getCharacterCoordinate(monster);
+            updateMapAfterMoveDown(cord.getRow(), cord.getCol(), monster);
+        }
     }
     
-    public boolean updateMapAfterMoveUp(int row, int col, Hero hero) {
+    public boolean updateMapAfterMoveUp(int row, int col, Character character) {
         if (row == 0) {
             System.out.println("Can't move player up any further, please provide a valid action.");
             return false;
@@ -188,11 +224,11 @@ public class Lane {
             return false;
         }
         else {
-            return placeHero(new Coordinate(row, col), new Coordinate(row - 1, col), hero);
+            return placeCharacter(new Coordinate(row, col), new Coordinate(row - 1, col), character);
         }
     }
 
-    public boolean updateMapAfterMoveDown(int row, int col, Hero hero) {
+    public boolean updateMapAfterMoveDown(int row, int col, Character character) {
         if (row == getRows() - 1) {
             System.out.println("Can't move player down any further, please provide a valid action.");
             return false;
@@ -202,11 +238,11 @@ public class Lane {
             return false;
         }
         else {
-            return placeHero(new Coordinate(row, col), new Coordinate(row + 1, col), hero);
+            return placeCharacter(new Coordinate(row, col), new Coordinate(row + 1, col), character);
         }
     }
 
-    public boolean updateMapAfterMoveLeft(int row, int col, Hero hero) {
+    public boolean updateMapAfterMoveLeft(int row, int col, Character character) {
         if (col == 0) {
             System.out.println("Can't move player left any further, please provide a valid action.");
             return false;
@@ -216,11 +252,11 @@ public class Lane {
             return false;
         }
         else {
-            return placeHero(new Coordinate(row, col), new Coordinate(row, col - 1), hero);
+            return placeCharacter(new Coordinate(row, col), new Coordinate(row, col - 1), character);
         }
     }
 
-    public boolean updateMapAfterMoveRight(int row, int col, Hero hero) {
+    public boolean updateMapAfterMoveRight(int row, int col, Character character) {
         if (col == getCols() - 1) {
             System.out.println("Can't move player right any further, please provide a valid action.");
             return false;
@@ -230,7 +266,7 @@ public class Lane {
             return false;
         }
         else {
-            return placeHero(new Coordinate(row, col), new Coordinate(row, col + 1), hero);
+            return placeCharacter(new Coordinate(row, col), new Coordinate(row, col + 1), character);
         }
     }
 
@@ -258,29 +294,24 @@ public class Lane {
         }
         return stringBuilder.append("+").toString();
     }
-    
-    public void addHero(int row, int col, Hero hero)
+
+    public CharacterLocationManager<Hero> getHerosLocationManager()
     {
-        this.heros.put(hero, new Coordinate(row, col));
+        return herosLocationManager;
     }
 
-    public HashMap<Hero, Coordinate> getHeros()
+    public void setHerosLocationManager(CharacterLocationManager<Hero> herosLocationManager)
     {
-        return heros;
+        this.herosLocationManager = herosLocationManager;
     }
 
-    public HashMap<Monster, Coordinate> getMonsters()
+    public CharacterLocationManager<Monster> getMonstersLocationManager()
     {
-        return monsters;
+        return monstersLocationManager;
     }
 
-    public void setHeros(HashMap<Hero, Coordinate> heros)
+    public void setMonstersLocationManager(CharacterLocationManager<Monster> monstersLocationManager)
     {
-        this.heros = heros;
-    }
-
-    public void setMonsters(HashMap<Monster, Coordinate> monsters)
-    {
-        this.monsters = monsters;
+        this.monstersLocationManager = monstersLocationManager;
     }
 }

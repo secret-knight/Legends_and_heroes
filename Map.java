@@ -99,7 +99,7 @@ public class Map {
             this.laneCollection.getNext().move();
         }
         
-        // monster tern
+        // monster turn
         // at every round each monster either attack a hero
         // or 
         // move one cell "forward"
