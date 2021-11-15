@@ -14,6 +14,13 @@ public class Plain extends Tile{
 
     @Override
     public String toString() {
-        return "\u001b[42;1m   " + getSymbol() + "   \u001b[0m";
+        if(getSymbol().length() == 1)
+        {
+            return "\u001b[42;1m   " + getSymbol() + "   \u001b[0m";
+        }
+        else
+        {
+            return "\u001b[42;1m  " + getSymbol() + "  \u001b[0m";
+        }
     }
 }
