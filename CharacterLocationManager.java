@@ -54,6 +54,30 @@ public class CharacterLocationManager <T extends Character>
         return locationsPQ.peek();
     }
     
+    public int getFurthermostDistance()
+    {
+        int res;
+        if(this.locationsPQ.isEmpty())
+        {
+            res = 0;
+        }
+        else
+        {
+            res = distanceToOrigin(this.characters.get(getFrontCharacter()));
+        }
+        return res;
+    }
+    
+    public int size()
+    {
+        return getCharacters().size();
+    }
+    
+    public boolean isEmpty()
+    {
+        return this.size() == 0;
+    }
+    
     public void updateLocation(T character, Coordinate cord)
     {
         Coordinate localCord = this.characters.get(character);

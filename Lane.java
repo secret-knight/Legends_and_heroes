@@ -49,15 +49,22 @@ public class Lane {
                 }
             }
         }
-        heroPlaced(rows - 1, 0, hero);
+        characterPlaced(rows - 1, 0, hero);
         getHerosLocationManager().add(hero, new Coordinate(rows - 1, 0));
+        
+        // copied from Fight.java
+        MonsterFactory monsterFactory = new MonsterFactory();
+        Monster monster = (Monster) monsterFactory.createCharacter(hero.getLevel());
+        characterPlaced(0, 0, monster);
+        getMonstersLocationManager().add(monster, new Coordinate(0, 0));
+        
     }
 
     // change playerPlaced to heroPlaced
-    public boolean heroPlaced(int row, int col, Hero hero)
+    public boolean characterPlaced(int row, int col, Character character)
     {
         Coordinate dest = new Coordinate(row, col);
-        return placeCharacter(dest, dest, hero);
+        return placeCharacter(dest, dest, character);
     }
     
     
@@ -101,9 +108,9 @@ public class Lane {
     private boolean canMoveCharacter(Character character, Coordinate to)
     {
         // check if pass through front monster
-        int heroFurthestRow    = getHerosLocationManager().getFrontCoordinate().getRow();
-        int monsterFurthestRow = getMonstersLocationManager().getFrontCoordinate().getRow();
-        if(heroFurthestRow +  monsterFurthestRow > (this.rows + 1))
+        int heroFurthestRow    = getHerosLocationManager().getFurthermostDistance();
+        int monsterFurthestRow = getMonstersLocationManager().getFurthermostDistance();
+        if(heroFurthestRow +  monsterFurthestRow > (this.rows - 1))
         {
             return false;
         }
