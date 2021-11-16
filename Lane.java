@@ -17,8 +17,8 @@ public class Lane {
 
     public Lane(Hero hero) {
         List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
-        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows));
-        this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0));
+        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows, 0));
+        this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0, 0));
         placement.addAll(Collections.nCopies(2, 1));
         placement.addAll(Collections.nCopies(2, 2));
         placement.addAll(Collections.nCopies(5, 3));
@@ -51,6 +51,7 @@ public class Lane {
         }
         characterPlaced(rows - 1, 0, hero);
         getHerosLocationManager().add(hero, new Coordinate(rows - 1, 0));
+        hero.setOrgLane(this);
         
         // copied from Fight.java
         MonsterFactory monsterFactory = new MonsterFactory();
@@ -269,6 +270,11 @@ public class Lane {
             return placeCharacter(new Coordinate(row, col), new Coordinate(row, col + 1), character);
         }
     }
+    
+    public void teleport(Character character, Coordinate from)
+    {
+        Map.getMap().teleportToOtherLane(character, from, this);
+    }
 
     public List<String> getString() {
         List<String> rowsStr = new ArrayList<String>();
@@ -313,5 +319,29 @@ public class Lane {
     public void setMonstersLocationManager(CharacterLocationManager<Monster> monstersLocationManager)
     {
         this.monstersLocationManager = monstersLocationManager;
+    }
+    
+    public Coordinate getCharacterLocation(Character character)
+    {
+        if(character instanceof Hero)
+        {
+            return this.getHerosLocationManager().getCharacterCoordinate((Hero)character);
+        }
+        else 
+        {
+            return this.getMonstersLocationManager().getCharacterCoordinate((Monster)character);
+        }
+    }
+
+    public Coordinate getOrgCord(Character character)
+    {
+        if(character instanceof Hero)
+        {
+            return this.getHerosLocationManager().getOriginCoordinate();
+        }
+        else
+        {
+            return this.getMonstersLocationManager().getOriginCoordinate();
+        }
     }
 }

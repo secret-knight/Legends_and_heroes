@@ -1,19 +1,21 @@
 import java.util.*;
+import java.util.Map.Entry;
 
 // represents the map of the game, singleton instance
 public class Map {
-    private static Map map;
+    private static       Map                      map;
 
-    private LaneCollection laneCollection;
-    private Tile currentTile;
-    private int currentRow;
-    private int currentCol;
-    private final int rows = 8;
-    private final int cols = 8;
-    private static final int NUMOFLANE = 3;
-
+    private              LaneCollection           laneCollection;
+    private              Tile                     currentTile;
+    private              HashMap<Character, Lane> recallingCharacters;
+    private              int                      currentRow;
+    private              int                      currentCol;
+    private        final int                      rows                = 8;
+    private        final int                      cols                = 8;
+    private static final int                      NUMOFLANE           = 3;
     private Map() {
-        laneCollection = new LaneCollection();
+        laneCollection      = new LaneCollection();
+        recallingCharacters = new LinkedHashMap<Character, Lane>();
         for (int i = 0; i < NUMOFLANE; i++)
             laneCollection.add(new Lane(Player.getPlayer().getHeroes().get(i)));
         System.out.println(this);
@@ -107,6 +109,18 @@ public class Map {
         {
             this.laneCollection.getNext().moveMonster();
         }
+        
+        // move characters that recalling to base
+        for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
+        {
+            Character character = recallEntry.getKey();
+            Lane      lane      = recallEntry.getValue();
+            teleport(character, 
+                    lane.getCharacterLocation(character), 
+                    lane, 
+                    character.getOrgLane().getOrgCord(character), 
+                    character.getOrgLane());
+        }
     }
 
     private List<Iterator<String>> getLaneStrIters() {
@@ -163,5 +177,28 @@ public class Map {
                 "+----------------------------------------------------------------------------------------------------+");
 
         return stringBuilder.toString();
+    }
+
+    public void recall(Character character, Lane currentLane)
+    {
+        this.recallingCharacters.put(character, currentLane);
+    }
+    
+    public void teleportToOtherLane(Character character, Coordinate org, Lane orgLane)
+    {
+        //TODO 
+        // print map lanes with indexed Tile, do not show other lane;
+        // ask user input the index number
+        // call teleport
+    }
+    
+    public void teleport(Character character, Coordinate org, Lane orgLane, Coordinate dest, Lane destLane)
+    {
+        destLane.placeCharacter(org, dest, character);
+    }
+
+    public HashMap<Character, Lane> getRecallingCharacters()
+    {
+        return recallingCharacters;
     }
 }

@@ -12,15 +12,20 @@ public class CharacterLocationManager <T extends Character>
 {
     private HashMap<T, Coordinate> characters;
     private PriorityQueue<T>       locationsPQ;
-    private int                    origin;
+    private Coordinate             origin;
     
     /**
      * constructor 
      * @param origin
      */
-    public CharacterLocationManager(int origin)
+    public CharacterLocationManager(int originRow, int originCol)
     {
-        this.origin      = origin;
+        this(new Coordinate(originRow, originCol));
+    }
+    
+    public CharacterLocationManager(Coordinate cord)
+    {
+        this.setOriginCoordinate(cord);
         this.characters  = new LinkedHashMap<T, Coordinate>();
         this.locationsPQ = new PriorityQueue<T>(new Comparator<T>() 
         {
@@ -31,6 +36,7 @@ public class CharacterLocationManager <T extends Character>
             }
         });
     }
+    
     
     // CRUD functions
     public void add(T character, Coordinate cord)
@@ -106,7 +112,7 @@ public class CharacterLocationManager <T extends Character>
     // helper function
     private int distanceToOrigin(Coordinate cord)
     {
-        return Math.abs(cord.getRow() - origin);
+        return Math.abs(cord.getRow() - this.getOriginRow());
     }
 
     // getters and setters
@@ -120,13 +126,33 @@ public class CharacterLocationManager <T extends Character>
         return this.characters.entrySet();
     }
 
-    public int getOrigin()
+    public int getOriginRow()
     {
-        return origin;
+        return this.getOriginCoordinate().getRow();
     }
 
-    public void setOrigin(int origin)
+    public void setOriginRow(int originRow)
     {
-        this.origin = origin;
+        this.getOriginCoordinate().setRow(originRow);
+    }
+
+    public int getOriginCol()
+    {
+        return this.getOriginCoordinate().getCol();
+    }
+
+    public void setOriginCol(int originCol)
+    {
+        this.getOriginCoordinate().setCol(originCol);;
+    }
+    
+    public Coordinate getOriginCoordinate()
+    {
+        return this.origin; 
+    }
+    
+    public void setOriginCoordinate(Coordinate cord)
+    {
+        this.origin = cord;
     }
 }
