@@ -7,6 +7,7 @@ public abstract class Character implements Fightable{
     private int level;
     private int hp;
     private Map<Attribute, Integer> buffedAtt; 
+    private Lane orgLane;
     
     public Character(String heroName, int heroLvl) {
         name = heroName;
@@ -60,5 +61,15 @@ public abstract class Character implements Fightable{
                     this.getLevel() == ((Character)another).getLevel(); 
         }
         return res;
+    }
+
+    public Lane getOrgLane()
+    {
+        return this.orgLane;
+    }
+    
+    public void setOrgLane(Lane lane)
+    {
+        this.orgLane = lane;
     }
 }

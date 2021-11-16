@@ -11,7 +11,7 @@ public abstract class Hero extends Character {
     private Armor armor;
     private Weapon weapon;
     private Inventory inventory;
-
+    
     public Hero(String heroName, int heroLvl, int heroStrength, int heroDexterity, int heroAgility) {
         super(heroName, heroLvl);
         mana = heroLvl*500;
