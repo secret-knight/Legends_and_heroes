@@ -117,7 +117,7 @@ public class Market {
         stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
                 "|" + Utils.getStringWithNumChar("Market", 100) + "|\n" +
                 "|" + Utils.getStringWithNumChar("", 100) + "|\n" +
-                Utils.getHeroAndControlsString(h, controls) +
+                Utils.getHeroAndControlsString(h, controls, 100) +
                 "|" + Utils.getStringWithNumChar("Note: For Potions' Stats Affected Category,", 100) + "|\n" +
                 "|" + Utils.getStringWithNumChar("H = Health, S = Strength, A = Agility, D = Dexterity, M = Mana", 100) + "|\n" +
                 "|" + Utils.getStringWithNumChar("", 100) + "|\n");

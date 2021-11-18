@@ -16,9 +16,9 @@ public class Lane {
     private final int cols = 2;
 
     public Lane(Hero hero) {
-        List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
-        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows, 0));
+        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows-1, 0));
         this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0, 0));
+        List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
         placement.addAll(Collections.nCopies(2, 1));
         placement.addAll(Collections.nCopies(2, 2));
         placement.addAll(Collections.nCopies(5, 3));
@@ -50,14 +50,9 @@ public class Lane {
             }
         }
         characterPlaced(rows - 1, 0, hero);
-        getHerosLocationManager().add(hero, new Coordinate(rows - 1, 0));
         hero.setOrgLane(this);
         
-        // copied from Fight.java
-        MonsterFactory monsterFactory = new MonsterFactory();
-        Monster monster = (Monster) monsterFactory.createCharacter(hero.getLevel());
-        characterPlaced(0, 0, monster);
-        getMonstersLocationManager().add(monster, new Coordinate(0, 0));
+        addNewMonster(hero.getLevel());
         
     }
 
@@ -67,7 +62,13 @@ public class Lane {
         Coordinate dest = new Coordinate(row, col);
         return placeCharacter(dest, dest, character);
     }
-    
+
+
+    public void addNewMonster(int level) {
+        // copied from Fight.java
+        Monster monster = (Monster) Utils.monsterFactory.createCharacter(level);
+        characterPlaced(0, 0, monster);
+    }
     
     /**
      * move hero from original Tile to another one
@@ -100,6 +101,21 @@ public class Lane {
         }
         return false;
     }
+
+    public boolean checkForWin() {
+
+        if (getHerosLocationManager().getFurthermostDistance() == rows - 1) {
+            System.out.println("The heroes have won!");
+            return true;
+        }
+
+        if (getMonstersLocationManager().getFurthermostDistance() == rows - 1) {
+            System.out.println("The monsters have won!");
+            return true;
+        }
+
+        return false;
+    }
     
     /**
      * check if we can move the character to current tile
@@ -108,16 +124,49 @@ public class Lane {
      */
     private boolean canMoveCharacter(Character character, Coordinate to)
     {
+        int heroRow    = 0;
+        int monsterRow = 0;
+        if (character instanceof Hero) {
+            heroRow    = getHerosLocationManager().distanceToOrigin(to);
+            monsterRow = getMonstersLocationManager().getFurthermostDistance();
+        } else {
+            heroRow    = getHerosLocationManager().getFurthermostDistance();
+            monsterRow = getMonstersLocationManager().distanceToOrigin(to);
+        }
         // check if pass through front monster
-        int heroFurthestRow    = getHerosLocationManager().getFurthermostDistance();
-        int monsterFurthestRow = getMonstersLocationManager().getFurthermostDistance();
-        if(heroFurthestRow +  monsterFurthestRow > (this.rows - 1))
+        if(heroRow +  monsterRow > (this.rows - 1))
         {
             return false;
         }
         else
         {
             return true;
+        }
+    }
+
+    private boolean fight(Hero hero) {
+
+        Coordinate closestMonsterCoord = getMonstersLocationManager().getFrontCoordinate();
+
+        Coordinate currentHeroCoord = getHerosLocationManager().getCharacterCoordinate(hero);
+
+        if (currentHeroCoord.getRow() - closestMonsterCoord.getRow() > 1) {
+            System.out.println("Can't fight with current hero, no monster is close enough.");
+            return false;
+        }
+        else {
+            Monster monster = getMonstersLocationManager().getFrontCharacter();
+            if (hero.act(monster)) {
+                if (monster.getHp() <= 0) {
+                    System.out.println(monster.getName() + " fainted!");
+                    getMonstersLocationManager().remove(monster);
+                    Tile t = tiles[closestMonsterCoord.getRow()][closestMonsterCoord.getCol()];
+                    t.removeCharacter(monster);
+                }
+                return true;
+            }
+            else
+                return false;
         }
     }
 
@@ -135,60 +184,57 @@ public class Lane {
         // iterate each hero, move each of them in current lane
         for(Entry<Hero, Coordinate> entry : getHerosLocationManager().getEntrySet())
         {
-            boolean    moved       = false;
             boolean    closed      = false;
             Hero       hero        = (Hero)entry.getKey();
             Coordinate cord        = entry.getValue();
             Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
+            boolean    onNexus     = currentTile instanceof Nexus;
             while (!closed && !Player.getPlayer().isGameOver()) {
-                System.out.println(Map.getMap());
-                String action = Utils.getValidInputString(new String[]{"e", "k", "w", "s", "a", "d", "i", "q"});
+                System.out.println(Map.getMap().getMapString(hero, onNexus));
+                String action = Utils.getValidInputString(new String[]{"w", "s", "a", "d", "e", "i", "t", "b", "f", "q", "k"});
                 switch (action) {
+                case "w":
+                    closed = updateMapAfterMoveUp(cord.getRow(), cord.getCol(), hero);
+                    break;
+                case "s":
+                    closed = updateMapAfterMoveDown(cord.getRow(), cord.getCol(), hero);
+                    break;
+                case "a":
+                    closed = updateMapAfterMoveLeft(cord.getRow(), cord.getCol(), hero);
+                    break;
+                case "d":
+                    closed = updateMapAfterMoveRight(cord.getRow(), cord.getCol(), hero);
+                    break;
                 case "e":
                     Inventory.enterInventoryScreen(null, true);
                     break;
+                case "i":
+                    Player.getPlayer().enterInfoScreen();
+                    break;
+                case "t":
+                    closed = teleport(hero, getHerosLocationManager().getCharacterCoordinate(hero));
+                    break;
+                case "b":
+                    closed = sendHeroBackToOrigin(hero);
+                    break;
+                case "f":
+                    closed = fight(hero);
+                    break;
+                case "q":
+                    System.out.println("Game ended");
+                    Player.getPlayer().setGameOver(true);
+                    break;
                 case "k":
-                    if (!(currentTile instanceof Nexus))
+                    if (!onNexus)
                         System.out.println("Can't enter market, you are not on a market tile.");
                     else {
                         Market market = new Market(Player.getPlayer().getMaxHeroLevel());
                         market.enterMarket();
                     }
                     break;
-                case "w":
-                    moved = updateMapAfterMoveUp(cord.getRow(), cord.getCol(), hero);
-                    closed = true;
-                    break;
-                case "s":
-                    moved = updateMapAfterMoveDown(cord.getRow(), cord.getCol(), hero);
-                    closed = true;
-                    break;
-                case "a":
-                    moved = updateMapAfterMoveLeft(cord.getRow(), cord.getCol(), hero);
-                    closed = true;
-                    break;
-                case "d":
-                    moved = updateMapAfterMoveRight(cord.getRow(), cord.getCol(), hero);
-                    closed = true;
-                    break;
-                case "i":
-                    Player.getPlayer().enterInfoScreen();
-                    break;
                 default:
-                    System.out.println("Game ended");
-                    Player.getPlayer().setGameOver(true);
                     break;
                 }
-            }
-            if (moved) {
-                // update currentTile
-                cord = getHerosLocationManager().getCharacterCoordinate(hero); 
-                currentTile = getSpecificTile(cord.getRow(), cord.getCol());
-                // check if plain and need to fight monster
-//                if ((currentTile instanceof Plain) && Utils.rand.nextFloat() > 0.5) {
-//                    Fight fight = new Fight(Player.getPlayer().getHeroes());
-//                    fight.commenceFight();
-//                }
             }
         }
     }
@@ -211,7 +257,36 @@ public class Lane {
         {
             Monster    monster = ite.next();
             Coordinate cord    = getMonstersLocationManager().getCharacterCoordinate(monster);
-            updateMapAfterMoveDown(cord.getRow(), cord.getCol(), monster);
+            if (!updateMapAfterMoveDown(cord.getRow(), cord.getCol(), monster)) {
+                Hero hero = getHerosLocationManager().getFrontCharacter();
+                monster.act(hero);
+                if (hero.getHp() <= 0) {
+                    System.out.println(hero.getName() + " fainted!");
+                    sendHeroBackToOrigin(hero);
+                    hero.fullyRevive();
+                }
+            }
+        }
+    }
+
+    private boolean sendHeroBackToOrigin(Hero hero) {
+        Coordinate heroCoord = getHerosLocationManager().getCharacterCoordinate(hero);
+        Coordinate heroOrigin = getOrgCord(hero);
+        Tile to = tiles[heroOrigin.getRow()][heroOrigin.getCol()];
+        Tile from = tiles[heroCoord.getRow()][heroCoord.getCol()];
+        if (to.moveCharacterFrom(from, hero)) {
+            getHerosLocationManager().updateLocation(hero, heroOrigin);
+            return true;
+        } else {
+            // check if other origin spot is open
+            to = tiles[heroOrigin.getRow()][heroOrigin.getCol() + 1];
+            if (to.moveCharacterFrom(from, hero)) {
+                getHerosLocationManager().updateLocation(hero, new Coordinate(heroOrigin.getRow(), heroOrigin.getCol()+1));
+                return true;
+            } else {
+                System.out.println("Both origin spots are occupied by other heroes, can't go back to Nexus right now.");
+                return false;
+            }
         }
     }
     
@@ -271,9 +346,9 @@ public class Lane {
         }
     }
     
-    public void teleport(Character character, Coordinate from)
+    public boolean teleport(Character character, Coordinate from)
     {
-        Map.getMap().teleportToOtherLane(character, from, this);
+        return Map.getMap().teleportToOtherLane(character, from, this);
     }
 
     public List<String> getString() {
@@ -296,7 +371,7 @@ public class Lane {
     private String getRowDivider() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int j = 0; j < cols; j++) {
-            stringBuilder.append("+-------");
+            stringBuilder.append("+---------");
         }
         return stringBuilder.append("+").toString();
     }

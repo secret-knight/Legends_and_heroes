@@ -165,22 +165,120 @@ public abstract class Hero extends Character {
     }
 
     @Override
-    public void attack(Character monster, Fight fight) {
+    public boolean act(Character opponent) {
+        int selectedAction = 0;
+        int selectedRow = 0;
+        boolean closed = false;
+        boolean acted = false;
+
+        Monster monster = (Monster) opponent;
+
+        while (!closed && !Player.getPlayer().isGameOver()) {
+            actionScreen(monster, selectedAction, selectedRow);
+            String action = Utils.getValidInputString(new String[]{"w", "s", "a", "d", "e", "i", "c", "q"});
+            switch (action) {
+                case "e":
+                    if (selectedAction == 1 && getInventory().getSpells().size() == 0)
+                        System.out.println("Can't cast spell, no spells in inventory.");
+                    else if (selectedAction == 2 && getInventory().getPotions().size() == 0)
+                        System.out.println("Can't cast spell, no spells in inventory.");
+                    else {
+                        closed = performAction(monster, selectedAction, getSelectedItem(selectedAction, selectedRow));
+                        acted = true;
+                    }
+                    break;
+                case "i":
+                    Player.getPlayer().enterInfoScreen();
+                    break;
+                case "w":
+                    if (selectedRow == 0)
+                        System.out.println("Can't move up from the current spot.");
+                    else
+                        selectedRow--;
+                    break;
+                case "s":
+                    if (selectedAction == 0 || selectedAction == 3 ||
+                            (selectedAction == 1 && getInventory().getSpells().size() == 0) ||
+                            (selectedAction == 2 && getInventory().getPotions().size() == 0) ||
+                            (selectedAction == 1 && selectedRow == getInventory().getSpells().size() - 1) ||
+                            (selectedAction == 2 && selectedRow == getInventory().getPotions().size() - 1))
+                        System.out.println("Can't move down from the current spot.");
+                    else
+                        selectedRow++;
+                    break;
+                case "a":
+                    if (selectedAction == 0)
+                        System.out.println("Can't move left from the current spot.");
+                    else {
+                        selectedAction -= 1;
+                        selectedRow = 0;
+                    }
+                    break;
+                case "d":
+                    if (selectedAction == 3)
+                        System.out.println("Can't move right from the current spot.");
+                    else {
+                        selectedAction += 1;
+                        selectedRow = 0;
+                    }
+                    break;
+                case "c":
+                    closed = true;
+                    break;
+                case "q":
+                    System.out.println("Game ended");
+                    Player.getPlayer().setGameOver(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return acted;
+    }
+
+    private boolean performAction(Monster m, int action, Item item) {
+        switch (action) {
+            case 0:
+                attack(m);
+                return true;
+            case 1:
+                return castItem(item, m);
+            case 2:
+                useItem(item);
+                return true;
+            default:
+                return changeEquipment();
+        }
+    }
+
+    private Item getSelectedItem(int action, int row) {
+        if (action == 1)
+            return getInventory().getSpells().get(row);
+        else if (action == 2)
+            return getInventory().getPotions().get(row);
+        else
+            return null;
+    }
+
+    @Override
+    public void attack(Character character) {
+
+        Monster monster = (Monster) character;
         if (!monster.attemptDodge()) {
-            int monsterDef = (int) (((Monster) monster).getDefense() * 0.04);
+            int monsterDef = (int) (monster.getDefense() * 0.04);
             int attackDamage;
             if (weapon == null) {
                 attackDamage = (int) (strength * 0.08);
                 monster.setHp(Math.max(monster.getHp() + monsterDef - attackDamage, 0));
-                fight.updateLog(getName() + " dealt " + (attackDamage - monsterDef) + " damage to " + monster.getName());
+                System.out.println(getName() + " dealt " + (attackDamage - monsterDef) + " damage to " + monster.getName());
             } else {
                 attackDamage = (int) ((strength + weapon.getDamage()) * 0.08);
                 monster.setHp(Math.max(monster.getHp() + monsterDef - attackDamage, 0));
-                fight.updateLog(getName() + " dealt " + (attackDamage - monsterDef)
+                System.out.println(getName() + " dealt " + (attackDamage - monsterDef)
                         + " damage to " + monster.getName());
             }
         } else
-            fight.updateLog(monster.getName() + " dodged the attack of " + getName());
+            System.out.println(monster.getName() + " dodged the attack of " + getName());
     }
 
     @Override
@@ -191,27 +289,27 @@ public abstract class Hero extends Character {
             return true;
     }
 
-    public void useItem(Item item, Fight fight) {
+    public void useItem(Item item) {
         if (item instanceof Usable) {
-            ((Usable) item).use(this, fight);
+            ((Usable) item).use(this);
             inventory.remove(item);
         }
         else
             System.out.println("Can't use anything besides potions.");
     }
 
-    public boolean castItem(Item item, Monster monster, Fight fight) {
+    public boolean castItem(Item item, Monster monster) {
         if (item instanceof Castable) {
             if (((Spell) item).getRequiredMana() > getMana()) {
                 System.out.println("Can't cast this spell, do not have enough mana.");
                 return false;
             }
             else if (!monster.attemptDodge()) {
-                 ((Castable) item).cast(this, monster, fight);
+                 ((Castable) item).cast(this, monster);
                  return true;
             }
             else {
-                fight.updateLog(monster.getName() + " dodged the attack of " + getName());
+                System.out.println(monster.getName() + " dodged the attack of " + getName());
                 return true;
             }
         }
@@ -221,13 +319,13 @@ public abstract class Hero extends Character {
         }
     }
 
-    public boolean changeEquipment(Fight fight) {
+    public boolean changeEquipment() {
 
         Armor oldArmor = armor;
         Weapon oldWeapon = weapon;
         Inventory.enterInventoryScreen(this, false);
         if (oldArmor != armor || oldWeapon != weapon) {
-            fight.updateLog(getName() + " changed equipment");
+            System.out.println(getName() + " changed equipment");
             return true;
         }
         else
@@ -301,6 +399,89 @@ public abstract class Hero extends Character {
             return  otherLevel.compareTo(thisLevel);
         }
     };
+
+    private void actionScreen(Monster m, int action, int row) {
+
+        List<String> log = new ArrayList<String>(Arrays.asList(new String[]{"|"+Utils.getStringWithNumChar("",70)+"|",
+                "|"+Utils.getStringWithNumChar("",70)+"|", "|"+Utils.getStringWithNumChar("",70)+"|",
+                "|"+Utils.getStringWithNumChar("",70)+"|", "|"+Utils.getStringWithNumChar("",70)+"|",
+                "|"+Utils.getStringWithNumChar("",70)+"|",}));
+
+        StringBuilder stringBuilder = new StringBuilder();
+        List<String> controls = Arrays.asList(new String[]{"| w = Move up  | s = Move down  |", "| a = Move left| d = Move right |",
+                "| i = Info     | e = Act        |", "| c = Close    | q = Quit game  |"});
+        stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
+                "|" + Utils.getStringWithNumChar("Fight!", 100) + "|\n" +
+                "|" + Utils.getStringWithNumChar("", 100) + "|\n" +
+                Utils.getFightInfoString(this, m, controls, 120) +
+                "|" + Utils.getStringWithNumChar("", 100) + "|\n");
+
+        List<Iterator<String>> its;
+        if (action == 1)
+            its = Arrays.asList(getArmorStrIter(), getInventory().getSpellStrIter(row), getWeaponStrIter());
+        else if (action == 2)
+            its = Arrays.asList(getArmorStrIter(), getInventory().getPotionStrIter(row), getWeaponStrIter());
+        else
+            its = Arrays.asList(getArmorStrIter(), Utils.nullItemStringIterator, getWeaponStrIter());
+
+        stringBuilder.append("|" + Utils.getStringWithNumChar("Equipped Armor", 33) +
+                Utils.getStringWithNumChar("Current Selected Item", 33) +
+                Utils.getStringWithNumChar("Equipped Weapon", 33) + " |\n");
+
+        int notDone = 0;
+        while(notDone < 3) {
+            notDone = 0;
+            String s = "";
+            for (Iterator<String> it : its) {
+                if (it.hasNext())
+                    s += Utils.getStringWithNumChar(it.next(), 33);
+                else {
+                    s += Utils.getStringWithNumChar("", 33);
+                    notDone++;
+                }
+            }
+            stringBuilder.append("|" + s + " |\n");
+        }
+
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 100) + "|\n" +
+                "|  " + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24)
+                + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24) + "  |\n" +
+                "|  " + Utils.getStringWithNumChar(Utils.getMenuString("      Attack      ", action == 0, false, ""), 24) +
+                Utils.getStringWithNumChar(Utils.getMenuString("    Cast Spell    ",
+                        action == 1 && getInventory().getSpells().size() == 0, false, ""),24) +
+                Utils.getStringWithNumChar(Utils.getMenuString("    Use Potion    ",
+                        action == 2 && getInventory().getPotions().size() == 0, false, ""),24) +
+                Utils.getStringWithNumChar(Utils.getMenuString(" Change Equipment ",action == 3, false, ""), 24) + "  |\n" +
+                "|  " + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24)
+                + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24) + "  |\n");
+
+        Iterator<Item> spells = getInventory().getSpells().iterator();
+        Iterator<Item> potions = getInventory().getPotions().iterator();
+
+        while (spells.hasNext() || potions.hasNext()) {
+            stringBuilder.append("|" + Utils.getStringWithNumChar("", 25));
+            Item spell , potion;
+            if (spells.hasNext()) {
+                spell = spells.next();
+                stringBuilder.append(Utils.getStringWithNumChar(Utils.getMenuString(
+                        Utils.getStringWithNumChar(spell.getName(), 18), action == 1 &&
+                                getInventory().getSpells().get(row) == spell, false, ""), 25));
+            } else
+                stringBuilder.append(Utils.getStringWithNumChar("", 25));
+            if (potions.hasNext()) {
+                potion = potions.next();
+                stringBuilder.append(Utils.getStringWithNumChar(Utils.getMenuString(
+                        Utils.getStringWithNumChar(potion.getName(), 18), action == 2 &&
+                                getInventory().getPotions().get(row) == potion, false, ""), 25));
+            } else
+                stringBuilder.append(Utils.getStringWithNumChar("", 25));
+            stringBuilder.append(Utils.getStringWithNumChar("", 25) + "|\n");
+        }
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 100) + "|\n" +
+                "+----------------------------------------------------------------------------------------------------+");
+
+        System.out.println(stringBuilder.toString());
+    }
 
     public List<String> getString() {
         List<String> s = new ArrayList<String>();

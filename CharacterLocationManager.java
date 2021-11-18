@@ -14,10 +14,10 @@ public class CharacterLocationManager <T extends Character>
     private PriorityQueue<T>       locationsPQ;
     private Coordinate             origin;
     
-    /**
-     * constructor 
-     * @param origin
-     */
+//    /**
+//     * constructor
+//     * @param origin
+//     */
     public CharacterLocationManager(int originRow, int originCol)
     {
         this(new Coordinate(originRow, originCol));
@@ -32,7 +32,7 @@ public class CharacterLocationManager <T extends Character>
             @Override
             public int compare(T o1, T o2)
             {
-                return distanceToOrigin(characters.get(o1)) - distanceToOrigin(characters.get(o2));
+                return distanceToOrigin(characters.get(o2)) - distanceToOrigin(characters.get(o1));
             }
         });
     }
@@ -73,6 +73,29 @@ public class CharacterLocationManager <T extends Character>
         }
         return res;
     }
+
+    public Coordinate getTeleportCoordinate() {
+        if (locationsPQ.isEmpty())
+            return origin;
+        else if (locationsPQ.size() == 1)
+            return new Coordinate(getFrontCoordinate().getRow(), -(getFrontCoordinate().getCol()-1));
+        else {
+            Iterator<T> iter = locationsPQ.iterator();
+            iter.next();
+            // if row has two heroes on it, one in each column
+            if (distanceToOrigin(getFrontCoordinate()) == distanceToOrigin(getCharacterCoordinate(iter.next()))) {
+                // check if full row is nexus. if so, return null so teleport is disabled
+                if (distanceToOrigin(getFrontCoordinate()) == 0)
+                    return null;
+                // else return the row below the full row
+                else
+                    return new Coordinate(getFrontCoordinate().getRow() + 1, getFrontCoordinate().getCol());
+            }
+            // if front most row has only one hero, return the other column of the same row
+            else
+                return new Coordinate(getFrontCoordinate().getRow(), -(getFrontCoordinate().getCol()));
+        }
+    }
     
     public int size()
     {
@@ -108,9 +131,8 @@ public class CharacterLocationManager <T extends Character>
     {
         return this.characters.keySet().iterator();
     }
-    
-    // helper function
-    private int distanceToOrigin(Coordinate cord)
+
+    public int distanceToOrigin(Coordinate cord)
     {
         return Math.abs(cord.getRow() - this.getOriginRow());
     }
@@ -125,6 +147,8 @@ public class CharacterLocationManager <T extends Character>
     {
         return this.characters.entrySet();
     }
+
+    public int getCharacterDistance(T character) {return distanceToOrigin(getCharacterCoordinate(character));}
 
     public int getOriginRow()
     {

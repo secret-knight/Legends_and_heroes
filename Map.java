@@ -18,27 +18,7 @@ public class Map {
         recallingCharacters = new LinkedHashMap<Character, Lane>();
         for (int i = 0; i < NUMOFLANE; i++)
             laneCollection.add(new Lane(Player.getPlayer().getHeroes().get(i)));
-        System.out.println(this);
     }
-
-//    public boolean playerPlaced(int i, int j) {
-//        Tile t = tiles[i][j];
-//        if (t != Tile.Inaccessible) {
-//            if (currentTile != null) {
-//                tiles[currentRow][currentCol] = currentTile;
-//            }
-//            currentTile = t;
-//            currentRow = i;
-//            currentCol = j;
-//            if (t == Tile.Market) {
-//                tiles[i][j] = Tile.OccupiedMarket;
-//            } else {
-//                tiles[i][j] = Tile.OccupiedCommon;
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
 
     public int getCurrentRow() {
         return currentRow;
@@ -111,7 +91,8 @@ public class Map {
         }
         
         // move characters that recalling to base
-        for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
+
+    for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
         {
             Character character = recallEntry.getKey();
             Lane      lane      = recallEntry.getValue();
@@ -120,6 +101,24 @@ public class Map {
                     lane, 
                     character.getOrgLane().getOrgCord(character), 
                     character.getOrgLane());
+        }
+    }
+
+    public void checkForWin() {
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            if(this.laneCollection.getNext().checkForWin()) {
+                Player.getPlayer().setGameOver(true);
+                System.out.println(Map.getMap().getMapString(Player.getPlayer().getHeroes().get(0), false));
+            }
+        }
+    }
+
+    public void createNewMonsters() {
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            this.laneCollection.getNext().addNewMonster(Player.getPlayer().getMaxHeroLevel());
+
         }
     }
 
@@ -132,30 +131,21 @@ public class Map {
         return laneStrIters;
     }
 
-    @Override
-    public String toString() {
+    public String getMapString(Hero hero, boolean onNexus) {
 
-        String[] controls = new String[]{"                  Controls & Info             |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |w = Move up   | a = Move left  |    |\n",
-                                         "         |s = Move down | d = Move right |    |\n",
-                                         "         |e = Inventory | i = Info       |    |\n",
-                                         "         |q = Quit game |                |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |     You are currently on a    |    |\n",
-                                         "         |                               |    |\n",
-                                         "         |                               |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "         |           C = Common          |    |\n",
-                                         "         |           M = Market          |    |\n",
-                                         "         |        I = Inaccessible       |    |\n",
-                                         "         +-------------------------------+    |\n",
-                                         "                                              |\n"};
+        ArrayList<String> controls = new ArrayList<String>(Arrays.asList("|w = Move up   | a = Move left  |",
+                                         "|s = Move down | d = Move right |",
+                                         "|e = Inventory | i = Info       |",
+                                         "|t = Teleport  | b = back       |",
+                                         "|f = fight     | q = Quit game  |"));
+
+        if (onNexus)
+            controls.add("|On Nexus, hit k to Enter Market|");
 
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
-                "|                                                MAP                                                 |\n" +
-                "|                                                                                                    |\n");
+        stringBuilder.append("+--------------------------------------------------------------------------------------------------------------------+\n" +
+                "|" + Utils.getStringWithNumChar("MAP", 116) + "|\n" +
+                Utils.getHeroAndControlsString(hero, controls, 116));
 
         List<Iterator<String>> lanesStrIter = getLaneStrIters();
         int count = 0;
@@ -166,15 +156,15 @@ public class Map {
                 line += lanesStrIter.get(i).next();
                 if (i != lanesStrIter.size() - 1)
                     if (count % 2 == 0)
-                        line += "-------";
+                        line += "---------";
                     else
                         line += new Inaccessible();
             }
             count ++;
             stringBuilder.append("|" + Utils.getStringWithNumChar(line, line.length()+35) + "|\n");
         }
-        stringBuilder.append("|                                                                                                    |\n" +
-                "+----------------------------------------------------------------------------------------------------+");
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 116) + "|\n" +
+                "+--------------------------------------------------------------------------------------------------------------------+");
 
         return stringBuilder.toString();
     }
@@ -184,17 +174,94 @@ public class Map {
         this.recallingCharacters.put(character, currentLane);
     }
     
-    public void teleportToOtherLane(Character character, Coordinate org, Lane orgLane)
+    public boolean teleportToOtherLane(Character character, Coordinate org, Lane orgLane)
     {
-        //TODO 
-        // print map lanes with indexed Tile, do not show other lane;
-        // ask user input the index number
-        // call teleport
+        boolean    closed      = false;
+        Lane chosenLane        = null;
+        List<Lane> possibleLanes = new ArrayList<Lane>();
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            Lane lane = this.laneCollection.getNext();
+            if (lane != orgLane) {
+                possibleLanes.add(lane);
+            }
+        }
+        while (!closed) {
+            System.out.println(getTeleportOptions((Hero) character, orgLane));
+            String action = Utils.getValidInputString(new String[]{"1", "2", "c"});
+            switch (action) {
+                case "1":
+                    chosenLane = possibleLanes.get(0);
+                    closed = teleport(character, org, orgLane, chosenLane.getHerosLocationManager().getTeleportCoordinate(), chosenLane);
+                    break;
+                case "2":
+                    chosenLane = possibleLanes.get(1);
+                    closed = teleport(character, org, orgLane, chosenLane.getHerosLocationManager().getTeleportCoordinate(), chosenLane);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private String getTeleportOptions(Hero hero, Lane orgLane) {
+        List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            Lane lane = this.laneCollection.getNext();
+            if (lane != orgLane) {
+                laneStrIters.add(lane.getString().iterator());
+            }
+        }
+
+
+
+        Iterator<String> strHero = hero.getVerticalString().iterator();
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("+--------------------------------------------------------------------------------------------------------------------------------+\n" +
+                "|" + Utils.getStringWithNumChar("Teleport", 128) + "|\n" +
+                "|" + Utils.getStringWithNumChar("(Press 1 or 2 to pick a lane or c to close the screen)", 128) + "|\n" +
+                "|" + Utils.getStringWithNumChar("", 128) + "|\n");
+
+        String line = Utils.getStringWithNumChar("Option 1", 25) + "         " +
+                Utils.getStringWithNumChar("Option 2", 25) + "         " +
+                Utils.getStringWithNumChar("Current Hero (H" + (Player.getPlayer().getHeroes().indexOf(hero) + 1) + ")", 25);
+
+        stringBuilder.append("|" + Utils.getStringWithNumChar(line, line.length()+35) + "|\n");
+        while (laneStrIters.get(0).hasNext()) {
+            line = "";
+            for (int i = 0; i < laneStrIters.size(); i++) {
+                line += laneStrIters.get(i).next() + "             ";
+            }
+
+            if (strHero.hasNext())
+                line += Utils.getStringWithNumChar(strHero.next(), 25);
+            else
+                line += Utils.getStringWithNumChar("", 25);
+
+            stringBuilder.append("|" + Utils.getStringWithNumChar(line, line.length()+35) + "|\n");
+        }
+
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 128) + "|\n" +
+                "+--------------------------------------------------------------------------------------------------------------------------------+");
+
+        return stringBuilder.toString();
     }
     
-    public void teleport(Character character, Coordinate org, Lane orgLane, Coordinate dest, Lane destLane)
+    public boolean teleport(Character character, Coordinate org, Lane orgLane, Coordinate dest, Lane destLane)
     {
-        destLane.placeCharacter(org, dest, character);
+        if (dest == null) {
+            System.out.println("Can't teleport, no open spots in selected lane.");
+            return false;
+        } else if (destLane.placeCharacter(org, dest, character)) {
+            orgLane.getSpecificTile(org.getRow(), org.getCol()).removeCharacter(character);
+            orgLane.getHerosLocationManager().remove((Hero) character);
+            return true;
+        }
+        else
+            return false;
     }
 
     public HashMap<Character, Lane> getRecallingCharacters()
