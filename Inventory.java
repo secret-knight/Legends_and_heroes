@@ -99,7 +99,7 @@ public class Inventory {
                     break;
                 case "u":
                     if (h.getInventory().size() != 0)
-                        h.useItem(h.getInventory().get(index), null);
+                        h.useItem(h.getInventory().get(index));
                     else
                         System.out.println("Can't use anything, no items in inventory.");
                     break;
@@ -152,7 +152,8 @@ public class Inventory {
 
         stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
                 "|" + Utils.getStringWithNumChar("Inventory", 100) + "|\n" +
-                "|" + Utils.getStringWithNumChar("", 100) + "|\n" + Utils.getHeroAndControlsString(h, controls) +
+                "|" + Utils.getStringWithNumChar("", 100) + "|\n" +
+                Utils.getHeroAndControlsString(h, controls, 100) +
                 "|" + Utils.getStringWithNumChar("Note: For Potions' Stats Affected Category,", 100) + "|\n" +
                 "|" + Utils.getStringWithNumChar("H = Health, S = Strength, A = Agility, D = Dexterity, M = Mana", 100) + "|\n" +
                 "|" + Utils.getStringWithNumChar("", 100) + "|\n");

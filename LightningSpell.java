@@ -9,12 +9,13 @@ public class LightningSpell extends Spell {
     }
 
     @Override
-    public void cast(Hero caster, Monster monster, Fight fight) {monster.setDodgeChance(Math.max(monster.getDodgeChance() - getReduceStat(), 0));
+    public void cast(Hero caster, Monster monster) {
+        monster.setDodgeChance(Math.max(monster.getDodgeChance() - getReduceStat(), 0));
         monster.setDodgeChance(Math.max(monster.getDodgeChance() - getReduceStat(), 0));
         caster.setMana(caster.getMana() - getRequiredMana());
         int damageWithDexterity = getDamage() + (caster.getDexterity()/10000) * getDamage();
         monster.setHp(Math.max(monster.getHp() + monster.getDefense() - damageWithDexterity, 0));
-        fight.updateLog(caster.getName() + " dealt " + (monster.getDefense() - damageWithDexterity) + " damage to " + monster.getName());
+        System.out.println(caster.getName() + " dealt " + (monster.getDefense() - damageWithDexterity) + " damage to " + monster.getName());
 
     }
 

@@ -161,9 +161,10 @@ public abstract class Tile {
     // toString
     public String getSymbol()
     {
+
         if(getCharacters().isEmpty())
         {
-            return symbol;
+            return "    " + symbol + "    ";
         }
         else
         {
@@ -172,23 +173,23 @@ public abstract class Tile {
             {
                 if(getCharacters().get(0) instanceof Hero)
                 {
-                    return "H";
+                    return " H" + (Player.getPlayer().getHeroes().indexOf(getCharacters().get(0))+1) + " " + symbol + "    ";
                 }
                 else
                 {
-                    return "M";
+                    return " M  " + symbol + "    ";
                 }
             }
             // if contains 2 return a combo
-            else 
+            else
             {
                 if(getCharacters().get(0) instanceof Hero)
                 {
-                    return "H M";
+                    return " H" + (Player.getPlayer().getHeroes().indexOf(getCharacters().get(0))+1) + " " + symbol + " M  ";
                 }
                 else
                 {
-                    return "M H";
+                    return " M  " + symbol + " H" + (Player.getPlayer().getHeroes().indexOf(getCharacters().get(1))+1) + " ";
                 }
             }
         }

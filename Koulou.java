@@ -17,11 +17,11 @@ public class Koulou extends Tile{
     public String toString() {
         if(getSymbol().length() == 1)
         {
-            return "\u001b[43;1m   " + getSymbol() + "   \u001b[0m";
+            return "\u001b[43;1m" + getSymbol() + "\u001b[0m";
         }
         else
         {
-            return "\u001b[43;1m  " + getSymbol() + "  \u001b[0m";
+            return "\u001b[43;1m" + getSymbol() + "\u001b[0m";
         }
     }
 }

@@ -12,7 +12,7 @@ public class Potion extends Item implements Usable {
     }
 
     @Override
-    public void use(Hero h, Fight fight) {
+    public void use(Hero h) {
         for (StatType stat : statTypes) {
             switch (stat) {
                 case Health:
@@ -34,8 +34,8 @@ public class Potion extends Item implements Usable {
                     break;
             }
         }
-        if (fight != null)
-            fight.updateLog(h.getName() + " increased " + getStatTypesString() + " by " + statIncrease);
+
+        System.out.println(h.getName() + " increased " + getStatTypesString() + " by " + statIncrease);
     }
 
     @Override

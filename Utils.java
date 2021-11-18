@@ -6,7 +6,7 @@ public class Utils {
     public static final Scanner scan = new Scanner( System.in );
     public static final Random rand = new Random();
     public static final HeroFactory heroFactory = new HeroFactory();
-    public static final MonsterFactory monsterFactor = new MonsterFactory();
+    public static final MonsterFactory monsterFactory = new MonsterFactory();
     public static final Iterator<String> nullItemStringIterator = Arrays.asList(new String[]{""}).iterator();
 
     // helper function that returns an input integer from the user given a lower and upper bound
@@ -67,27 +67,28 @@ public class Utils {
 
     // helper function that prints side by side a hero's info and a list of controls passed in.
     // super useful since this is used multiple times across the codebase
-    public static String getHeroAndControlsString(Hero h, List<String> controls) {
+    public static String getHeroAndControlsString(Hero h, List<String> controls, int totalWidth) {
+        int width = totalWidth / 2;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("|" + Utils.getStringWithNumChar("Current Selected Hero", 50) +
-                Utils.getStringWithNumChar("+-------------------------------+", 50) + "|\n");
+        stringBuilder.append("|" + Utils.getStringWithNumChar("Current Selected Hero", width) +
+                Utils.getStringWithNumChar("+-------------------------------+", width) + "|\n");
         Iterator<String> strHero = h.getString().iterator();
         Iterator<String> strControls = controls.iterator();
         boolean lastControl = true;
 
         while (strHero.hasNext() || lastControl) {
             if (strHero.hasNext()) {
-                stringBuilder.append("|" + Utils.getStringWithNumChar(strHero.next(), 50));
+                stringBuilder.append("|" + Utils.getStringWithNumChar(strHero.next(), width));
             } else {
-                stringBuilder.append("|" + Utils.getStringWithNumChar("", 50));
+                stringBuilder.append("|" + Utils.getStringWithNumChar("", width));
             }
             if (strControls.hasNext()) {
-                stringBuilder.append(Utils.getStringWithNumChar(strControls.next(), 50) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar(strControls.next(), width) + "|\n");
             } else if (lastControl) {
-                stringBuilder.append(Utils.getStringWithNumChar("+-------------------------------+", 50) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar("+-------------------------------+", width) + "|\n");
                 lastControl = false;
             } else {
-                stringBuilder.append(Utils.getStringWithNumChar("", 50) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar("", width) + "|\n");
             }
         }
         return stringBuilder.toString();
@@ -95,28 +96,27 @@ public class Utils {
 
     // helper function that prints side by side a monster's info and a fight log passed.
     // super useful since this is used multiple times and could be used elsewhere if project is extended
-    public static String getMonsterAndFightLogString(Monster m, List<String> log) {
+    public static String getFightInfoString(Hero hero, Monster monster, List<String> controls, int totalWidth) {
+        int width = totalWidth / 3;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("|" + Utils.getStringWithNumChar("Current Monster", 25) +
-                Utils.getStringWithNumChar("+----------------------------------------------------------------------+", 75) + "|\n");
-        Iterator<String> strMonst = m.getString().iterator();
-        Iterator<String> strLog = log.iterator();
+        stringBuilder.append("|" + Utils.getStringWithNumChar("Current Hero (H" +
+                (Player.getPlayer().getHeroes().indexOf(hero) + 1) + ")", width) +
+                Utils.getStringWithNumChar("", width) +
+                Utils.getStringWithNumChar("+-------------------------------+", width) + "|\n");
+        Iterator<String> strHero = hero.getString().iterator();
+        Iterator<String> strMonster = monster.getString().iterator();
+        Iterator<String> strControls = controls.iterator();
         boolean lastControl = true;
-        int i = 6;
 
-        while (strMonst.hasNext() || lastControl) {
-            if (strMonst.hasNext()) {
-                stringBuilder.append("|" + Utils.getStringWithNumChar(strMonst.next(), 25));
-            } else {
-                stringBuilder.append("|" + Utils.getStringWithNumChar("", 25));
-            }
-            if (strLog.hasNext()) {
-                stringBuilder.append(Utils.getStringWithNumChar(strLog.next(), 75) + "|\n");
+        while (strHero.hasNext()) {
+            stringBuilder.append("|" + Utils.getStringWithNumChar(strHero.next(), width) + Utils.getStringWithNumChar(strMonster.next(), width));
+            if (strControls.hasNext()) {
+                stringBuilder.append(Utils.getStringWithNumChar(strControls.next(), width) + "|\n");
             } else if (lastControl) {
-                stringBuilder.append(Utils.getStringWithNumChar("+----------------------------------------------------------------------+", 75) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar("+-------------------------------+", width) + "|\n");
                 lastControl = false;
             } else {
-                stringBuilder.append(Utils.getStringWithNumChar("", 75) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar("", width) + "|\n");
             }
         }
         return stringBuilder.toString();
