@@ -66,9 +66,11 @@ public class Player {
                     else
                         embark = true;
                     break;
-                default:
+                case "q":
                     System.out.println("Game ended");
                     setGameOver(true);
+                    break;
+                default:
                     break;
             }
         }

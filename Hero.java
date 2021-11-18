@@ -402,19 +402,14 @@ public abstract class Hero extends Character {
 
     private void actionScreen(Monster m, int action, int row) {
 
-        List<String> log = new ArrayList<String>(Arrays.asList(new String[]{"|"+Utils.getStringWithNumChar("",70)+"|",
-                "|"+Utils.getStringWithNumChar("",70)+"|", "|"+Utils.getStringWithNumChar("",70)+"|",
-                "|"+Utils.getStringWithNumChar("",70)+"|", "|"+Utils.getStringWithNumChar("",70)+"|",
-                "|"+Utils.getStringWithNumChar("",70)+"|",}));
-
         StringBuilder stringBuilder = new StringBuilder();
         List<String> controls = Arrays.asList(new String[]{"| w = Move up  | s = Move down  |", "| a = Move left| d = Move right |",
                 "| i = Info     | e = Act        |", "| c = Close    | q = Quit game  |"});
-        stringBuilder.append("+----------------------------------------------------------------------------------------------------+\n" +
-                "|" + Utils.getStringWithNumChar("Fight!", 100) + "|\n" +
-                "|" + Utils.getStringWithNumChar("", 100) + "|\n" +
+        stringBuilder.append("+------------------------------------------------------------------------------------------------------------------------+\n" +
+                "|" + Utils.getStringWithNumChar("Fight!", 120) + "|\n" +
+                "|" + Utils.getStringWithNumChar("", 120) + "|\n" +
                 Utils.getFightInfoString(this, m, controls, 120) +
-                "|" + Utils.getStringWithNumChar("", 100) + "|\n");
+                "|" + Utils.getStringWithNumChar("", 120) + "|\n");
 
         List<Iterator<String>> its;
         if (action == 1)
@@ -424,9 +419,9 @@ public abstract class Hero extends Character {
         else
             its = Arrays.asList(getArmorStrIter(), Utils.nullItemStringIterator, getWeaponStrIter());
 
-        stringBuilder.append("|" + Utils.getStringWithNumChar("Equipped Armor", 33) +
-                Utils.getStringWithNumChar("Current Selected Item", 33) +
-                Utils.getStringWithNumChar("Equipped Weapon", 33) + " |\n");
+        stringBuilder.append("|" + Utils.getStringWithNumChar("Equipped Armor", 40) +
+                Utils.getStringWithNumChar("Current Selected Item", 40) +
+                Utils.getStringWithNumChar("Equipped Weapon", 40) + "|\n");
 
         int notDone = 0;
         while(notDone < 3) {
@@ -434,51 +429,55 @@ public abstract class Hero extends Character {
             String s = "";
             for (Iterator<String> it : its) {
                 if (it.hasNext())
-                    s += Utils.getStringWithNumChar(it.next(), 33);
+                    s += Utils.getStringWithNumChar(it.next(), 40);
                 else {
-                    s += Utils.getStringWithNumChar("", 33);
+                    s += Utils.getStringWithNumChar("", 40);
                     notDone++;
                 }
             }
-            stringBuilder.append("|" + s + " |\n");
+            stringBuilder.append("|" + s + "|\n");
         }
 
-        stringBuilder.append("|" + Utils.getStringWithNumChar("", 100) + "|\n" +
-                "|  " + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24)
-                + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24) + "  |\n" +
-                "|  " + Utils.getStringWithNumChar(Utils.getMenuString("      Attack      ", action == 0, false, ""), 24) +
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 120) + "|\n" +
+                "|" + Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) + "|\n" +
+                "|" + Utils.getStringWithNumChar(Utils.getMenuString("      Attack      ", action == 0, false, ""), 30) +
                 Utils.getStringWithNumChar(Utils.getMenuString("    Cast Spell    ",
-                        action == 1 && getInventory().getSpells().size() == 0, false, ""),24) +
+                        action == 1 && getInventory().getSpells().size() == 0, false, ""),30) +
                 Utils.getStringWithNumChar(Utils.getMenuString("    Use Potion    ",
-                        action == 2 && getInventory().getPotions().size() == 0, false, ""),24) +
-                Utils.getStringWithNumChar(Utils.getMenuString(" Change Equipment ",action == 3, false, ""), 24) + "  |\n" +
-                "|  " + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24)
-                + Utils.getStringWithNumChar("+------------------+", 24) + Utils.getStringWithNumChar("+------------------+", 24) + "  |\n");
+                        action == 2 && getInventory().getPotions().size() == 0, false, ""),30) +
+                Utils.getStringWithNumChar(Utils.getMenuString(" Change Equipment ",action == 3, false, ""), 24)
+                + "|\n" + "|" + Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) +
+                Utils.getStringWithNumChar("+------------------+", 30) + "|\n");
 
         Iterator<Item> spells = getInventory().getSpells().iterator();
         Iterator<Item> potions = getInventory().getPotions().iterator();
 
         while (spells.hasNext() || potions.hasNext()) {
-            stringBuilder.append("|" + Utils.getStringWithNumChar("", 25));
+            stringBuilder.append("|" + Utils.getStringWithNumChar("", 30));
             Item spell , potion;
             if (spells.hasNext()) {
                 spell = spells.next();
                 stringBuilder.append(Utils.getStringWithNumChar(Utils.getMenuString(
                         Utils.getStringWithNumChar(spell.getName(), 18), action == 1 &&
-                                getInventory().getSpells().get(row) == spell, false, ""), 25));
+                                getInventory().getSpells().get(row) == spell, false, ""), 30));
             } else
-                stringBuilder.append(Utils.getStringWithNumChar("", 25));
+                stringBuilder.append(Utils.getStringWithNumChar("", 30));
             if (potions.hasNext()) {
                 potion = potions.next();
                 stringBuilder.append(Utils.getStringWithNumChar(Utils.getMenuString(
                         Utils.getStringWithNumChar(potion.getName(), 18), action == 2 &&
-                                getInventory().getPotions().get(row) == potion, false, ""), 25));
+                                getInventory().getPotions().get(row) == potion, false, ""), 30));
             } else
-                stringBuilder.append(Utils.getStringWithNumChar("", 25));
-            stringBuilder.append(Utils.getStringWithNumChar("", 25) + "|\n");
+                stringBuilder.append(Utils.getStringWithNumChar("", 30));
+            stringBuilder.append(Utils.getStringWithNumChar("", 30) + "|\n");
         }
-        stringBuilder.append("|" + Utils.getStringWithNumChar("", 100) + "|\n" +
-                "+----------------------------------------------------------------------------------------------------+");
+        stringBuilder.append("|" + Utils.getStringWithNumChar("", 120) + "|\n" +
+                "+------------------------------------------------------------------------------------------------------------------------+");
 
         System.out.println(stringBuilder.toString());
     }
