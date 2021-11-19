@@ -71,7 +71,7 @@ public abstract class Tile {
      * @param character
      * @return
      */
-    private boolean canAddCharacter(Character character)
+    public boolean canAddCharacter(Character character)
     {
         // if empty
         if(this.isEmpty())

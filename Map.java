@@ -91,17 +91,27 @@ public class Map {
         }
         
         // move characters that recalling to base
-
-    for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
+        for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
         {
             Character character = recallEntry.getKey();
             Lane      lane      = recallEntry.getValue();
-            teleport(character, 
-                    lane.getCharacterLocation(character), 
-                    lane, 
-                    character.getOrgLane().getOrgCord(character), 
-                    character.getOrgLane());
+            if(lane.canRecallCharacter(character)) 
+            {
+                for(Coordinate cord : lane.getNexusCoordiantes())
+                {
+                    if(lane.getSpecificTile(cord).canAddCharacter(character))
+                    {
+                        teleport(character, 
+                                lane.getCharacterLocation(character), 
+                                lane, 
+                                cord, 
+                                character.getOrgLane());
+                        break;
+                    }
+                }
+            }
         }
+        getRecallingCharacters().clear();
     }
 
     public void checkForWin() {
@@ -255,9 +265,8 @@ public class Map {
         if (dest == null) {
             System.out.println("Can't teleport, no open spots in selected lane.");
             return false;
-        } else if (destLane.placeCharacter(org, dest, character)) {
-            orgLane.getSpecificTile(org.getRow(), org.getCol()).removeCharacter(character);
-            orgLane.getHerosLocationManager().remove((Hero) character);
+        } else if (destLane.placeCharacter(org, dest, character)) 
+        {
             return true;
         }
         else

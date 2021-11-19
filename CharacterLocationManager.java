@@ -172,7 +172,7 @@ public class CharacterLocationManager <T extends Character>
     
     public Coordinate getOriginCoordinate()
     {
-        return this.origin; 
+        return new Coordinate(this.origin); 
     }
     
     public void setOriginCoordinate(Coordinate cord)
