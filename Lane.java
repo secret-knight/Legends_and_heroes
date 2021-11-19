@@ -6,6 +6,7 @@ import java.util.PriorityQueue;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Comparator;
 
 public class Lane {
@@ -143,6 +144,19 @@ public class Lane {
             return true;
         }
     }
+    
+    public boolean canRecallCharacter(Character character)
+    {
+        // check whether nexus tiles are occupied by other hero
+        for(Coordinate cord : getNexusCoordiantes())
+        {
+            if(this.getSpecificTile(cord).canAddCharacter(character))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private boolean fight(Hero hero) {
 
@@ -181,9 +195,12 @@ public class Lane {
 
     public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
 
+    public Tile getSpecificTile(Coordinate cord) { return this.getSpecificTile(cord.getRow(), cord.getCol()); };
+    
     public void move() {
         // iterate each hero, move each of them in current lane
-        for(Entry<Hero, Coordinate> entry : getHerosLocationManager().getEntrySet())
+        List<Entry<Hero, Coordinate>> herosEntries = new LinkedList<>(getHerosLocationManager().getEntrySet());
+        for(Entry<Hero, Coordinate> entry : herosEntries)
         {
             boolean    closed      = false;
             Hero       hero        = (Hero)entry.getKey();
@@ -271,24 +288,35 @@ public class Lane {
     }
 
     private boolean sendHeroBackToOrigin(Hero hero) {
-        Coordinate heroCoord = getHerosLocationManager().getCharacterCoordinate(hero);
-        Coordinate heroOrigin = getOrgCord(hero);
-        Tile to = tiles[heroOrigin.getRow()][heroOrigin.getCol()];
-        Tile from = tiles[heroCoord.getRow()][heroCoord.getCol()];
-        if (to.moveCharacterFrom(from, hero)) {
-            getHerosLocationManager().updateLocation(hero, heroOrigin);
+        Lane orgLane  = hero.getOrgLane();
+        if (orgLane.canRecallCharacter(hero))
+        {
+            Map.getMap().recall(hero, this);
             return true;
-        } else {
-            // check if other origin spot is open
-            to = tiles[heroOrigin.getRow()][heroOrigin.getCol() + 1];
-            if (to.moveCharacterFrom(from, hero)) {
-                getHerosLocationManager().updateLocation(hero, new Coordinate(heroOrigin.getRow(), heroOrigin.getCol()+1));
-                return true;
-            } else {
-                System.out.println("Both origin spots are occupied by other heroes, can't go back to Nexus right now.");
-                return false;
-            }
         }
+        else
+        {
+            System.out.println("Both origin spots are occupied by other heroes, can't go back to Nexus right now.");
+            return false;
+        }
+//        Coordinate heroCoord = getHerosLocationManager().getCharacterCoordinate(hero);
+//        Coordinate heroOrigin = getOrgCord(hero);
+//        Tile to = tiles[heroOrigin.getRow()][heroOrigin.getCol()];
+//        Tile from = tiles[heroCoord.getRow()][heroCoord.getCol()];
+//        if (to.moveCharacterFrom(from, hero)) {
+//            getHerosLocationManager().updateLocation(hero, heroOrigin);
+//            return true;
+//        } else {
+//            // check if other origin spot is open
+//            to = tiles[heroOrigin.getRow()][heroOrigin.getCol() + 1];
+//            if (to.moveCharacterFrom(from, hero)) {
+//                getHerosLocationManager().updateLocation(hero, new Coordinate(heroOrigin.getRow(), heroOrigin.getCol()+1));
+//                return true;
+//            } else {
+//                System.out.println("Both origin spots are occupied by other heroes, can't go back to Nexus right now.");
+//                return false;
+//            }
+//        }
     }
     
     public boolean updateMapAfterMoveUp(int row, int col, Character character) {
@@ -419,5 +447,13 @@ public class Lane {
         {
             return this.getMonstersLocationManager().getOriginCoordinate();
         }
+    }
+    
+    public List<Coordinate> getNexusCoordiantes()
+    {
+        List<Coordinate> res = new ArrayList<>();
+        res.add(new Coordinate(this.getRows() - 1, 0));
+        res.add(new Coordinate(this.getRows() - 1, 1));
+        return res;
     }
 }

@@ -9,6 +9,11 @@ public class Coordinate
         this.setRow(row);
         this.setCol(col);
     }
+    
+    public Coordinate(Coordinate another)
+    {
+        this(another.getRow(), another.getCol());
+    }
 
     public int getRow()
     {
