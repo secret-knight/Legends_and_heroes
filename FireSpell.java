@@ -12,8 +12,9 @@ public class FireSpell extends Spell {
         monster.setDefense(Math.max(monster.getDefense() - getReduceStat(), 0));
         caster.setMana(caster.getMana() - getRequiredMana());
         int damageWithDexterity = getDamage() + (caster.getDexterity()/10000) * getDamage();
-        monster.setHp(Math.max(monster.getHp() + monster.getDefense() - damageWithDexterity, 0));
-        System.out.println(caster.getName() + " dealt " + (monster.getDefense() - damageWithDexterity) + " damage to " + monster.getName());
+        int defense = (int) (monster.getDefense() * 0.03);
+        monster.setHp(Math.max(monster.getHp() + defense - damageWithDexterity, 0));
+        System.out.println(caster.getName() + " dealt " + (defense - damageWithDexterity) + " damage to " + monster.getName());
     }
 
     @Override

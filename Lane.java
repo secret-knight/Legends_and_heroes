@@ -150,7 +150,7 @@ public class Lane {
 
         Coordinate currentHeroCoord = getHerosLocationManager().getCharacterCoordinate(hero);
 
-        if (currentHeroCoord.getRow() - closestMonsterCoord.getRow() > 1) {
+        if (closestMonsterCoord == null || currentHeroCoord.getRow() - closestMonsterCoord.getRow() > 1) {
             System.out.println("Can't fight with current hero, no monster is close enough.");
             return false;
         }
@@ -159,6 +159,7 @@ public class Lane {
             if (hero.act(monster)) {
                 if (monster.getHp() <= 0) {
                     System.out.println(monster.getName() + " fainted!");
+                    //TODO REWARD HERO HERE
                     getMonstersLocationManager().remove(monster);
                     Tile t = tiles[closestMonsterCoord.getRow()][closestMonsterCoord.getCol()];
                     t.removeCharacter(monster);

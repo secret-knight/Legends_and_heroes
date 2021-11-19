@@ -101,7 +101,7 @@ public class Utils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("|" + Utils.getStringWithNumChar("Current Hero (H" +
                 (Player.getPlayer().getHeroes().indexOf(hero) + 1) + ")", width) +
-                Utils.getStringWithNumChar("", width) +
+                Utils.getStringWithNumChar("Current Monster", width) +
                 Utils.getStringWithNumChar("+-------------------------------+", width) + "|\n");
         Iterator<String> strHero = hero.getString().iterator();
         Iterator<String> strMonster = monster.getString().iterator();
