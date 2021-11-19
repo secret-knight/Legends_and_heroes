@@ -267,6 +267,12 @@ public class Map {
             return false;
         } else if (destLane.placeCharacter(org, dest, character)) 
         {
+            // remove org lane character only if teleport to other lane
+            if(!orgLane.equals(destLane)) 
+            {
+                orgLane.getSpecificTile(org.getRow(), org.getCol()).removeCharacter(character);
+                orgLane.getHerosLocationManager().remove((Hero) character);
+            }
             return true;
         }
         else

@@ -193,6 +193,16 @@ public class Lane {
         return cols;
     }
 
+    public Tile[][] getTiles()
+    {
+        return tiles;
+    }
+
+    public void setTiles(Tile[][] tiles)
+    {
+        this.tiles = tiles;
+    }
+
     public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
 
     public Tile getSpecificTile(Coordinate cord) { return this.getSpecificTile(cord.getRow(), cord.getCol()); };
@@ -455,5 +465,14 @@ public class Lane {
         res.add(new Coordinate(this.getRows() - 1, 0));
         res.add(new Coordinate(this.getRows() - 1, 1));
         return res;
+    }
+    
+    public boolean equals(Object another)
+    {
+        if(another instanceof Lane)
+        {
+            return this.getTiles().equals(((Lane)another).getTiles());
+        }
+        return false;
     }
 }
