@@ -259,6 +259,7 @@ public class Lane {
                 case "q":
                     System.out.println("Game ended");
                     Player.getPlayer().setGameOver(true);
+                    System.exit(0);// exit the game program
                     break;
                 case "k":
                     if (!onNexus)
