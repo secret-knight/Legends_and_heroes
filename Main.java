@@ -10,7 +10,7 @@ public class Main {
         // play game
         while (!p.isGameOver()) {
             m.move();
-            if (roundsPlayed % 2 == 0) {
+            if (roundsPlayed % 8 == 0) {
                 m.createNewMonsters();
             }
             roundsPlayed++;
