@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // class that represents Monsters of the game, much less functionality than heroes
-public abstract class Monster extends Character{
+public abstract class Monster extends Character {
     private int damage;
     private int defense;
     private int dodgeChance;
@@ -26,21 +26,28 @@ public abstract class Monster extends Character{
         this("Desghidorrah", 1);
     }
 
+    @Override
+    public boolean act(Character opponent) {
+        Hero hero = (Hero) opponent;
+        attack(hero);
+        return true;
+    }
+
     // attacks a hero and adds the attack to the log
     @Override
-    public void attack(Character hero, Fight fight) {
+    public void attack(Character hero) {
         if (!hero.attemptDodge()) {
             int attackDamage = (int) (damage * 0.08);
             if (((Hero) hero).getArmor() == null) {
                 hero.setHp(Math.max(hero.getHp() - attackDamage, 0));
-                fight.updateLog(getName() + " dealt " + attackDamage + " damage to " + hero.getName());
+                System.out.println(getName() + " dealt " + attackDamage + " damage to " + hero.getName());
             } else{
                 int armorEffect = (int) (((Hero) hero).getArmor().getReducedDamage() * 0.03);
                 hero.setHp(Math.max(hero.getHp() + armorEffect - attackDamage, 0));
-                fight.updateLog(getName() + " dealt " + (attackDamage - armorEffect) + " damage to " + hero.getName());
+                System.out.println(getName() + " dealt " + (attackDamage - armorEffect) + " damage to " + hero.getName());
             }
         } else
-            fight.updateLog(hero.getName() + " dodged the attack of " + getName());
+            System.out.println(hero.getName() + " dodged the attack of " + getName());
     }
 
     // attempts to dodge given the monster's stats
@@ -76,6 +83,22 @@ public abstract class Monster extends Character{
 
     public int getDodgeChance() {
         return dodgeChance;
+    }
+    
+    @Override
+    public void applyBuff(Attribute att, int pcnt)
+    {
+        // do nothing
+    }
+
+    public void removeBuff(Attribute att)
+    {
+        // do nothing
+    }
+
+    public void removeBuff(Attribute att, int pcnt)
+    {
+        // do nothing
     }
 
     public List<String> getString() {

@@ -61,14 +61,16 @@ public class Player {
                         hs.setCurrentlySelected(hs.getCurrentlySelected()+1);
                     break;
                 case "c":
-                    if (heroes.size() == 0)
-                        System.out.println("Can't embark yet, must have at least 1 hero.");
+                    if (heroes.size() != 3)
+                        System.out.println("Can't embark yet, must have 3 heroes.");
                     else
                         embark = true;
                     break;
-                default:
+                case "q":
                     System.out.println("Game ended");
                     setGameOver(true);
+                    break;
+                default:
                     break;
             }
         }
