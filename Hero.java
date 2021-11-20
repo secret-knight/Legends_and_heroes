@@ -62,7 +62,7 @@ public abstract class Hero extends Character {
     public int getStrength() {
         if(getBuffedAttributes().containsKey(Attribute.STRENGTH))
         {
-            return strength * (1 + getBuffedAttributes().get(Attribute.STRENGTH));
+            return (int) (strength * (1 + ((double)(getBuffedAttributes().get(Attribute.STRENGTH)) / 100)));
         }
         else
         {
@@ -73,7 +73,7 @@ public abstract class Hero extends Character {
     public int getDexterity() {
         if(getBuffedAttributes().containsKey(Attribute.DEXTERITY))
         {
-            return dexterity * (1 + getBuffedAttributes().get(Attribute.DEXTERITY));
+            return (int) (dexterity * (1 + ((double)(getBuffedAttributes().get(Attribute.DEXTERITY)) / 100)));
         }
         else
         {
@@ -84,7 +84,7 @@ public abstract class Hero extends Character {
     public int getAgility() {
         if(getBuffedAttributes().containsKey(Attribute.AGILITY))
         {
-            return agility * (1 + getBuffedAttributes().get(Attribute.AGILITY));
+            return (int) (agility * (1 + ((double)(getBuffedAttributes().get(Attribute.AGILITY)) / 100)));
         }
         else
         {
@@ -485,10 +485,10 @@ public abstract class Hero extends Character {
     public List<String> getString() {
         List<String> s = new ArrayList<String>();
         s.add("Name: " + getName());
-        s.add("Level : " + getLevel() + "       Strength : " + strength);
-        s.add("HP : " + getHp() + "       Dexterity : " + dexterity);
-        s.add("Exp : " + exp + "          Agility : " + agility);
-        s.add("Money : " + money + "         Mana :  " + mana);
+        s.add("Level : " + getLevel() + "       Strength : " + this.getStrength());
+        s.add("HP : " + getHp() + "       Dexterity : " + this.getDexterity());
+        s.add("Exp : " + exp + "          Agility : " + this.getAgility());
+        s.add("Money : " + money + "         Mana :  " + this.getMana());
         return s;
     }
 
@@ -496,13 +496,13 @@ public abstract class Hero extends Character {
         List<String> s = new ArrayList<String>();
         s.add("Name: " + getName());
         s.add("Level : " + getLevel());
-        s.add("Strength : " + strength);
+        s.add("Strength : " + this.getStrength());
         s.add("HP : " + getHp());
-        s.add("Dexterity : " + dexterity);
-        s.add("Exp : " + exp);
-        s.add("Agility : " + agility);
-        s.add("Money : " + money);
-        s.add("Mana :  " + mana);
+        s.add("Dexterity : " + this.getDexterity());
+        s.add("Exp : " + this.getExp());
+        s.add("Agility : " + this.getAgility());
+        s.add("Money : " + this.getMoney());
+        s.add("Mana :  " + this.getMana());
         return s;
     }
 
@@ -512,12 +512,12 @@ public abstract class Hero extends Character {
                 "name='" + super.getName() + '\'' +
                 ", level=" + super.getLevel() +
                 ", hp=" + super.getHp() +
-                ", mana=" + mana +
-                ", money=" + money +
-                ", exp=" + exp +
-                ", strength=" + strength +
-                ", dexterity=" + dexterity +
-                ", agility=" + agility +
+                ", mana=" + this.getMana() +
+                ", money=" + this.getMoney() +
+                ", exp=" + this.getExp() +
+                ", strength=" + this.getStrength() +
+                ", dexterity=" + this.getDexterity() +
+                ", agility=" + this.getAgility() +
                 '}';
     }
 }

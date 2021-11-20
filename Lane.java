@@ -107,11 +107,13 @@ public class Lane {
 
         if (getHerosLocationManager().getFurthermostDistance() == rows - 1) {
             System.out.println("The heroes have won!");
+            System.out.println(AsciiArt.YOUWON);
             return true;
         }
 
         if (getMonstersLocationManager().getFurthermostDistance() == rows - 1) {
             System.out.println("The monsters have won!");
+            System.out.println(AsciiArt.GAMEOVER);
             return true;
         }
 

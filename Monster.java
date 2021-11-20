@@ -37,7 +37,7 @@ public abstract class Monster extends Character {
     @Override
     public void attack(Character hero) {
         if (!hero.attemptDodge()) {
-            int attackDamage = (int) (damage * 0.08);
+            int attackDamage = (int) (this.getDamage() * 0.08);
             if (((Hero) hero).getArmor() == null) {
                 hero.setHp(Math.max(hero.getHp() - attackDamage, 0));
                 System.out.println(getName() + " dealt " + attackDamage + " damage to " + hero.getName());
@@ -106,9 +106,9 @@ public abstract class Monster extends Character {
         s.add("Name: " + getName());
         s.add("Level : " + getLevel());
         s.add("HP : " + getHp());
-        s.add("Damage : " + damage);
-        s.add("Defense : " + defense);
-        s.add("Dodge % : " + dodgeChance);
+        s.add("Damage : " + this.getDamage());
+        s.add("Defense : " + this.getDefense());
+        s.add("Dodge % : " + this.getDodgeChance());
         return s;
     }
 }
