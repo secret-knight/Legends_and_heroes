@@ -213,10 +213,18 @@ public class Lane {
         for(Entry<Hero, Coordinate> entry : herosEntries)
         {
             boolean    closed      = false;
-            Hero       hero        = (Hero)entry.getKey();
+            Hero       hero        = entry.getKey();
             Coordinate cord        = entry.getValue();
             Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
             boolean    onNexus     = currentTile instanceof Nexus;
+            if(Map.getMap().getActedHero().contains(hero)) 
+            {
+                continue;
+            }
+            else
+            {
+                Map.getMap().getActedHero().add(hero);
+            }
             while (!closed && !Player.getPlayer().isGameOver()) {
                 System.out.println(Map.getMap().getMapString(hero, onNexus));
                 String action = Utils.getValidInputString(new String[]{"w", "s", "a", "d", "e", "i", "t", "b", "f", "q", "k"});

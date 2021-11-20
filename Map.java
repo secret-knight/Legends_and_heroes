@@ -13,6 +13,7 @@ public class Map {
     private        final int                      rows                = 8;
     private        final int                      cols                = 8;
     private static final int                      NUMOFLANE           = 3;
+    private              Set<Hero>                actedHero           = new HashSet<Hero>();
     private Map() {
         laneCollection      = new LaneCollection();
         recallingCharacters = new LinkedHashMap<Character, Lane>();
@@ -112,6 +113,7 @@ public class Map {
             }
         }
         getRecallingCharacters().clear();
+        getActedHero().clear();
     }
 
     public void checkForWin() {
@@ -282,5 +284,15 @@ public class Map {
     public HashMap<Character, Lane> getRecallingCharacters()
     {
         return recallingCharacters;
+    }
+
+    public Set<Hero> getActedHero()
+    {
+        return actedHero;
+    }
+
+    public void setActedHero(Set<Hero> actedHero)
+    {
+        this.actedHero = actedHero;
     }
 }
