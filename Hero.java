@@ -448,7 +448,7 @@ public abstract class Hero extends Character {
                         action == 1 && getInventory().getSpells().size() == 0, false, ""),30) +
                 Utils.getStringWithNumChar(Utils.getMenuString("    Use Potion    ",
                         action == 2 && getInventory().getPotions().size() == 0, false, ""),30) +
-                Utils.getStringWithNumChar(Utils.getMenuString(" Change Equipment ",action == 3, false, ""), 24)
+                Utils.getStringWithNumChar(Utils.getMenuString(" Change Equipment ",action == 3, false, ""), 30)
                 + "|\n" + "|" + Utils.getStringWithNumChar("+------------------+", 30) +
                 Utils.getStringWithNumChar("+------------------+", 30) +
                 Utils.getStringWithNumChar("+------------------+", 30) +
