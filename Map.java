@@ -13,6 +13,7 @@ public class Map {
     private        final int                      rows                = 8;
     private        final int                      cols                = 8;
     private static final int                      NUMOFLANE           = 3;
+    private              Set<Hero>                actedHero           = new HashSet<Hero>();
     private Map() {
         laneCollection      = new LaneCollection();
         recallingCharacters = new LinkedHashMap<Character, Lane>();
@@ -111,7 +112,18 @@ public class Map {
                 }
             }
         }
+        
+        // regain each character
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            for(Hero hero : this.laneCollection.getNext().getHerosLocationManager().getCharacters())
+            {
+                hero.regainAfterRound();
+            }
+        }
+        
         getRecallingCharacters().clear();
+        getActedHero().clear();
     }
 
     public void checkForWin() {
@@ -267,6 +279,12 @@ public class Map {
             return false;
         } else if (destLane.placeCharacter(org, dest, character)) 
         {
+            // remove org lane character only if teleport to other lane
+            if(!orgLane.equals(destLane)) 
+            {
+                orgLane.getSpecificTile(org.getRow(), org.getCol()).removeCharacter(character);
+                orgLane.getHerosLocationManager().remove((Hero) character);
+            }
             return true;
         }
         else
@@ -276,5 +294,15 @@ public class Map {
     public HashMap<Character, Lane> getRecallingCharacters()
     {
         return recallingCharacters;
+    }
+
+    public Set<Hero> getActedHero()
+    {
+        return actedHero;
+    }
+
+    public void setActedHero(Set<Hero> actedHero)
+    {
+        this.actedHero = actedHero;
     }
 }

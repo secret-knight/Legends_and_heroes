@@ -193,6 +193,16 @@ public class Lane {
         return cols;
     }
 
+    public Tile[][] getTiles()
+    {
+        return tiles;
+    }
+
+    public void setTiles(Tile[][] tiles)
+    {
+        this.tiles = tiles;
+    }
+
     public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
 
     public Tile getSpecificTile(Coordinate cord) { return this.getSpecificTile(cord.getRow(), cord.getCol()); };
@@ -203,10 +213,18 @@ public class Lane {
         for(Entry<Hero, Coordinate> entry : herosEntries)
         {
             boolean    closed      = false;
-            Hero       hero        = (Hero)entry.getKey();
+            Hero       hero        = entry.getKey();
             Coordinate cord        = entry.getValue();
             Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
             boolean    onNexus     = currentTile instanceof Nexus;
+            if(Map.getMap().getActedHero().contains(hero)) 
+            {
+                continue;
+            }
+            else
+            {
+                Map.getMap().getActedHero().add(hero);
+            }
             while (!closed && !Player.getPlayer().isGameOver()) {
                 System.out.println(Map.getMap().getMapString(hero, onNexus));
                 String action = Utils.getValidInputString(new String[]{"w", "s", "a", "d", "e", "i", "t", "b", "f", "q", "k"});
@@ -241,6 +259,7 @@ public class Lane {
                 case "q":
                     System.out.println("Game ended");
                     Player.getPlayer().setGameOver(true);
+                    System.exit(0);// exit the game program
                     break;
                 case "k":
                     if (!onNexus)
@@ -455,5 +474,14 @@ public class Lane {
         res.add(new Coordinate(this.getRows() - 1, 0));
         res.add(new Coordinate(this.getRows() - 1, 1));
         return res;
+    }
+    
+    public boolean equals(Object another)
+    {
+        if(another instanceof Lane)
+        {
+            return this.getTiles().equals(((Lane)another).getTiles());
+        }
+        return false;
     }
 }
