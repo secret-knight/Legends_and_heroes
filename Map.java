@@ -112,6 +112,16 @@ public class Map {
                 }
             }
         }
+        
+        // regain each character
+        for(int i = 0; i < this.laneCollection.size(); i++)
+        {
+            for(Hero hero : this.laneCollection.getNext().getHerosLocationManager().getCharacters())
+            {
+                hero.regainAfterRound();
+            }
+        }
+        
         getRecallingCharacters().clear();
         getActedHero().clear();
     }
