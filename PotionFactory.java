@@ -1,7 +1,6 @@
 // given a set of names, potions are created with random attributes given a level
 public class PotionFactory implements ItemFactoryCreator {
-    private static String[] potionNames = new String[]{"Healing Potion", "Strength Potion", "Magic Potion",
-            "Luck Elixir", "Mermaid Tears", "Ambrosia"};
+    private static String[] potionNames = PresetLoader.getInstance().getPortionNames();
     private static StatType[][] potionAffectedStats = new StatType[][]{{StatType.Health}, {StatType.Strength},
             {StatType.Mana}, {StatType.Agility}, {StatType.Health, StatType.Mana, StatType.Strength, StatType.Agility},
             {StatType.Health, StatType.Mana, StatType.Strength, StatType.Dexterity, StatType.Agility}};

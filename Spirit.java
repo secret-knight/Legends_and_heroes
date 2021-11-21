@@ -5,6 +5,11 @@ public class Spirit extends Monster{
         super(monsterName, monsterLvl);
         setFavoredStat(m);
     }
+    
+    public Spirit(String monsterName, int monsterLvl, int monsterDamage, int monsterDefense, int monsterDodge, float m) {
+        super(monsterName, monsterLvl, monsterDamage, monsterDefense, monsterDodge);
+        setFavoredStat(m);
+    }
 
     public Spirit(float m) {
         super();

@@ -5,6 +5,11 @@ public class Warrior extends Hero{
         setFavoredStats(m1, m2);
     }
 
+    public Warrior(String heroName, int heroLvl, int mana, int money, int exp, int heroStrength, int heroDexterity, int heroAgility, float m1, float m2) {
+        super(heroName, heroLvl, heroStrength, heroDexterity, heroAgility);
+        setFavoredStats(m1, m2);
+    }
+    
     public Warrior(float m1, float m2) {
         super();
         setFavoredStats(m1, m2);

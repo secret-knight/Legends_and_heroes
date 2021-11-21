@@ -1,10 +1,7 @@
 // hero factory that creates heroes either purely random or with more inputs passed in
 public class HeroFactory implements CharacterFactoryCreator{
 
-    private static String[] names = new String[]{"Gaerdal Ironhand", "Sehanine Monnbow", "Muamman Duathall",
-            "Flandal Steelskin", "Undefeated Yoj", "Eunoia Cyn", "Rillifane Rallathil", "Segojan Earthcaller", "Reign Havoc",
-            "Reverie Ashels", "Kalabar", "Skye Soar", "Parzival", "Drako Delirious", "Skoraeus Stonebones",
-            "Garl Glittergold ", "Amaryllis Astra", "Caliber Heist"};
+    private static String[] names = PresetLoader.getInstance().getAllHerosNames();
 
     // creates hero with some input provided
     @Override
