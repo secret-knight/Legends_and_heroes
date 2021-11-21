@@ -11,14 +11,15 @@ import java.util.Comparator;
 
 public class LOVlane extends AbsLane
 {
-    private Tile[][] tiles;
+    
     private CharacterLocationManager<Hero>    herosLocationManager;
     private CharacterLocationManager<Monster> monstersLocationManager;
-    private final int rows = 8;
-    private final int cols = 2;
+    private static final int ROWNUM = 8;
+    private static final int COLNUM = 2;
 
     public LOVlane(Hero hero) {
-        this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows-1, 0));
+        super(ROWNUM, COLNUM);
+        this.setHerosLocationManager(new CharacterLocationManager<Hero>(ROWNUM-1, 0));
         this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0, 0));
         List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
         placement.addAll(Collections.nCopies(2, 1));
@@ -29,29 +30,28 @@ public class LOVlane extends AbsLane
         placement.add(0, 4);
         placement.add(4);
         placement.add(4);
-        tiles = new Tile[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < ROWNUM; i++) {
+            for (int j = 0; j < COLNUM; j++) {
                 switch (placement.remove(0)) {
                     case 0:
-                        tiles[i][j] = new Bush();
+                        getTiles()[i][j] = new Bush();
                         break;
                     case 1:
-                        tiles[i][j] = new Koulou();
+                        getTiles()[i][j] = new Koulou();
                         break;
                     case 2:
-                        tiles[i][j] = new Cave();
+                        getTiles()[i][j] = new Cave();
                         break;
                     case 3:
-                        tiles[i][j] = new Plain();
+                        getTiles()[i][j] = new Plain();
                         break;
                     default:
-                        tiles[i][j] = new Nexus();
+                        getTiles()[i][j] = new Nexus();
                         break;
                 }
             }
         }
-        characterPlaced(rows - 1, 0, hero);
+        characterPlaced(ROWNUM - 1, 0, hero);
         hero.setOrgLane(this);
         
         addNewMonster(hero.getLevel());
@@ -81,13 +81,13 @@ public class LOVlane extends AbsLane
      * @return          whether is move applicable or not
      */
     public boolean placeCharacter(Coordinate from, Coordinate to, Character character) {
-        Tile t = tiles[to.getRow()][to.getCol()];
+        Tile t = getTiles()[to.getRow()][to.getCol()];
         // check if we can move the character
         // - can not move to inaccessible tile
         // - can not move heros and monsters pass through each other
         // - can not move out lane
         if (!(t instanceof Inaccessible) && canMoveCharacter(character, to)) {
-            boolean isMovable = t.moveCharacterFrom(tiles[from.getRow()][from.getCol()], character);
+            boolean isMovable = t.moveCharacterFrom(getTiles()[from.getRow()][from.getCol()], character);
             if(isMovable)
             {
                 if(character instanceof Hero)
@@ -106,13 +106,13 @@ public class LOVlane extends AbsLane
 
     public boolean checkForWin() {
 
-        if (getHerosLocationManager().getFurthermostDistance() == rows - 1) {
+        if (getHerosLocationManager().getFurthermostDistance() == ROWNUM - 1) {
             System.out.println("The heroes have won!");
             System.out.println(AsciiArt.YOUWON);
             return true;
         }
 
-        if (getMonstersLocationManager().getFurthermostDistance() == rows - 1) {
+        if (getMonstersLocationManager().getFurthermostDistance() == ROWNUM - 1) {
             System.out.println("The monsters have won!");
             System.out.println(AsciiArt.GAMEOVER);
             return true;
@@ -138,7 +138,7 @@ public class LOVlane extends AbsLane
             monsterRow = getMonstersLocationManager().distanceToOrigin(to);
         }
         // check if pass through front monster
-        if(heroRow +  monsterRow > (this.rows - 1))
+        if(heroRow +  monsterRow > (this.ROWNUM - 1))
         {
             return false;
         }
@@ -178,7 +178,7 @@ public class LOVlane extends AbsLane
                     System.out.println(monster.getName() + " fainted!");
                     //TODO REWARD HERO HERE
                     getMonstersLocationManager().remove(monster);
-                    Tile t = tiles[closestMonsterCoord.getRow()][closestMonsterCoord.getCol()];
+                    Tile t = getTiles()[closestMonsterCoord.getRow()][closestMonsterCoord.getCol()];
                     t.removeCharacter(monster);
                 }
                 return true;
@@ -189,24 +189,14 @@ public class LOVlane extends AbsLane
     }
 
     public int getRows() {
-        return rows;
+        return ROWNUM;
     }
 
     public int getCols() {
-        return cols;
+        return COLNUM;
     }
 
-    public Tile[][] getTiles()
-    {
-        return tiles;
-    }
-
-    public void setTiles(Tile[][] tiles)
-    {
-        this.tiles = tiles;
-    }
-
-    public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
+    public Tile getSpecificTile(int i, int j) { return getTiles()[i][j];}
 
     public Tile getSpecificTile(Coordinate cord) { return this.getSpecificTile(cord.getRow(), cord.getCol()); };
     
@@ -404,12 +394,12 @@ public class LOVlane extends AbsLane
 
     public List<String> getString() {
         List<String> rowsStr = new ArrayList<String>();
-        for (int i = 0, k = 0; i < rows; i++, k += 2) {
+        for (int i = 0, k = 0; i < ROWNUM; i++, k += 2) {
             rowsStr.add(getRowDivider());
             String s = "";
-            for (int j = 0; j < cols; j++) {
+            for (int j = 0; j < COLNUM; j++) {
                 s += "|";
-                Tile tile = tiles[i][j];
+                Tile tile = getTiles()[i][j];
                 s += tile.toString();
             }
             rowsStr.add(s + "|");
@@ -421,7 +411,7 @@ public class LOVlane extends AbsLane
 
     private String getRowDivider() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int j = 0; j < cols; j++) {
+        for (int j = 0; j < COLNUM; j++) {
             stringBuilder.append("+---------");
         }
         return stringBuilder.append("+").toString();

@@ -4,38 +4,59 @@ import java.io.IOException;
 import javax.sound.sampled.LineEvent.Type;
 public class Sound
 {
-    public static void playClip(File clipFile) throws IOException, 
-                                                      UnsupportedAudioFileException, 
-                                                      LineUnavailableException, 
-                                                      InterruptedException 
+    public static synchronized void playClip(File clipFile) 
     {
-        class AudioListener implements LineListener {
-            private boolean done = false;
-            @Override public synchronized void update(LineEvent event) {
-                Type eventType = event.getType();
-                if (eventType == Type.STOP || eventType == Type.CLOSE) {
-                    done = true;
-                    notifyAll();
+        new Thread(new Runnable() 
+        {
+            public void run()
+            {
+                if(clipFile == null)
+                {
+                    return;
                 }
+                class AudioListener implements LineListener {
+                    private boolean done = false;
+                    @Override public synchronized void update(LineEvent event) {
+                        Type eventType = event.getType();
+                        if (eventType == Type.STOP || eventType == Type.CLOSE) {
+                            done = true;
+                            notifyAll();
+                        }
+                    }
+                    public synchronized void waitUntilDone() throws InterruptedException {
+                        while (!done) { wait(); }
+                    }
+                }
+                AudioListener listener;
+                AudioInputStream audioInputStream = null;
+                try {
+                    listener = new AudioListener();
+                    audioInputStream = AudioSystem.getAudioInputStream(clipFile);
+                    Clip clip = AudioSystem.getClip();
+                    clip.addLineListener(listener);
+                    clip.open(audioInputStream);
+                    try {
+                        clip.start();
+                        listener.waitUntilDone();
+                    } finally {
+                        clip.close();
+                    }
+                } 
+                catch(Exception e){}
+                finally {
+                    if(audioInputStream != null)
+                    {
+                        try
+                        {
+                            audioInputStream.close();
+                        } catch (IOException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }                
             }
-            public synchronized void waitUntilDone() throws InterruptedException {
-                while (!done) { wait(); }
-            }
-        }
-        AudioListener listener = new AudioListener();
-        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(clipFile);
-        try {
-            Clip clip = AudioSystem.getClip();
-            clip.addLineListener(listener);
-            clip.open(audioInputStream);
-            try {
-                clip.start();
-                listener.waitUntilDone();
-            } finally {
-                clip.close();
-            }
-        } finally {
-            audioInputStream.close();
-        }
+        }).start();
     }
 }
