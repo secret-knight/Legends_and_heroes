@@ -13,8 +13,8 @@ public class LegendOfValor extends AbsRPGGame
     public LegendOfValor() {
         super(ROWS, COLS, NUMOFLANE);
         System.out.println(AsciiArt.LEGENDSOFVALOR);
-        Sound.playClip(soundFile);
-        System.out.println("BGM\"Beat Thee\" Written by Alexander Nakarada. The play of the music in this game is for non-purpose only");
+        BGM.playClip(soundFile);
+        System.out.println("BGM\"Beat Thee\" Written by Alexander Nakarada. The music play in this game is for education purpose only");
         map = LOVmap.getMap(ROWS, COLS, NUMOFLANE);
         player = Player.getPlayer(); 
     }

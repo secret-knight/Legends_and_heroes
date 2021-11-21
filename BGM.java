@@ -2,7 +2,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.LineEvent.Type;
-public class Sound
+public class BGM
 {
     public static synchronized void playClip(File clipFile) 
     {
