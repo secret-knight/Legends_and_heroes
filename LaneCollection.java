@@ -6,15 +6,15 @@ import java.util.List;
  */
 public class LaneCollection
 {
-    private List<LOVlane> lanes;
+    private List<LOVLane> lanes;
     private int        nextIdx;
     public LaneCollection()
     {
-        this.lanes   = new ArrayList<LOVlane>();
+        this.lanes   = new ArrayList<LOVLane>();
         this.nextIdx = 0;
     }
     
-    public void add(LOVlane lane)
+    public void add(LOVLane lane)
     {
         this.lanes.add(lane);
     }
@@ -24,9 +24,9 @@ public class LaneCollection
         return this.lanes.size();
     }
     
-    public LOVlane getNext()
+    public LOVLane getNext()
     {
-        LOVlane lane = this.lanes.get(nextIdx);
+        LOVLane lane = this.lanes.get(nextIdx);
         nextIdx   = (nextIdx + 1) % this.lanes.size();
         
         return lane;
@@ -37,7 +37,7 @@ public class LaneCollection
         return this.lanes.isEmpty();
     }
 
-    public List<LOVlane> getLaneList()
+    public List<LOVLane> getLaneList()
     {
         return this.lanes;
     }

@@ -12,7 +12,7 @@ public class AbsMap
     private int            laneNum;
     private LaneCollection laneCollection;
     private Set<Hero>      actedHero;
-    private HashMap<Character, LOVlane> recallingCharacters;
+    private HashMap<Character, LOVLane> recallingCharacters;
 
     
     public AbsMap(int rowNum, int colNum, int laneNum)
@@ -70,12 +70,12 @@ public class AbsMap
         this.actedHero = actedHero;
     }
     
-    public HashMap<Character, LOVlane> getRecallingCharacters()
+    public HashMap<Character, LOVLane> getRecallingCharacters()
     {
         return recallingCharacters;
     }
 
-    public void setRecallingCharacters(HashMap<Character, LOVlane> recallingCharacters)
+    public void setRecallingCharacters(HashMap<Character, LOVLane> recallingCharacters)
     {
         this.recallingCharacters = recallingCharacters;
     }
