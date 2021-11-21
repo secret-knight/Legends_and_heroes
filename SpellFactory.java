@@ -1,4 +1,7 @@
 // given a set of names, spells are created with random attributes given a level
+/**
+ * factory that instantiate spells
+ */
 public class SpellFactory implements ItemFactoryCreator {
     private static String[] iceSpellNames = PresetLoader.getInstance().getIceSpellNames();
     private static String[] fireSpellNames = PresetLoader.getInstance().getFireSpellNames();

@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * potion entity class
+ */
 public class Potion extends Item implements Usable {
     private int statIncrease;
     private StatType[] statTypes;

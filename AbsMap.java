@@ -2,6 +2,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * abstract class of map for rpg game
+ */
 public class AbsMap
 {
     private int            rowNum;

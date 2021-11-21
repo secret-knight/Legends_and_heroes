@@ -1,4 +1,7 @@
 
+/**
+ * asciiart storage class
+ */
 public class AsciiArt
 {
     public static final String LEGENDSOFVALOR = "\u001B[35m" + 

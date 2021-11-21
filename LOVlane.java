@@ -9,6 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Comparator;
 
+/**
+ * lane class that serve for LOV game
+ */
 public class LOVlane extends AbsLane
 {
     

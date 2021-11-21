@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * helper class with lots helper functions
+ */
 public class Utils {
 
     // create a scanner object to be used for the entire application

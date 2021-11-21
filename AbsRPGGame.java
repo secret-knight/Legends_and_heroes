@@ -1,3 +1,6 @@
+/**
+ * abs class that holding basic member of RPG game so far
+ */
 public abstract class AbsRPGGame implements IRPGGame
 {
     private int rowNum;

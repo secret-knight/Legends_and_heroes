@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * collection class for Lane instances, in charge of lane rotate 
+ */
 public class LaneCollection
 {
     private List<LOVlane> lanes;

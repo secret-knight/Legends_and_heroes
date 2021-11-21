@@ -1,5 +1,8 @@
 import java.io.File;
 
+/**
+ * main game class for LOV
+ */
 public class LegendOfValor extends AbsRPGGame
 {
     private static final int    ROWS        = 8;

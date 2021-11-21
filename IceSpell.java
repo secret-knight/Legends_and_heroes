@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * ice spell entity
+ */
 public class IceSpell extends Spell {
 
     public IceSpell(String spellName, int spellPrice, int spellMinLevel,int spellDamage,

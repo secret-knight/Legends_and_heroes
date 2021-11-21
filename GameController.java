@@ -1,3 +1,6 @@
+/**
+ * controller that manage different games, start them and how they interact with main screen
+ */
 public class GameController {
     
     /**

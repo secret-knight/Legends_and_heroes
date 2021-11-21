@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * fire spell entity
+ */
 public class FireSpell extends Spell {
     public FireSpell(String spellName, int spellPrice, int spellMinLevel,int spellDamage,
                     int spellRequiredMana, int spellReduceStat) {
