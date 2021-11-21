@@ -2,23 +2,18 @@ import java.util.*;
 import java.util.Map.Entry;
 
 // represents the map of the game, singleton instance
-public class Map {
-    private static       Map                      map;
-
-    private              LaneCollection           laneCollection;
-    private              Tile                     currentTile;
-    private              HashMap<Character, Lane> recallingCharacters;
+public class LOVmap extends AbsMap{
+    private static       LOVmap                   map;
     private              int                      currentRow;
     private              int                      currentCol;
-    private        final int                      rows                = 8;
-    private        final int                      cols                = 8;
-    private static final int                      NUMOFLANE           = 3;
-    private              Set<Hero>                actedHero           = new HashSet<Hero>();
-    private Map() {
-        laneCollection      = new LaneCollection();
-        recallingCharacters = new LinkedHashMap<Character, Lane>();
-        for (int i = 0; i < NUMOFLANE; i++)
-            laneCollection.add(new Lane(Player.getPlayer().getHeroes().get(i)));
+    private static final int                      ROWNUM      = 8;
+    private static final int                      COLNUM      = 8;
+    private static final int                      LANENUM     = 3;
+    private LOVmap(int rowNum, int colNum, int laneNum) {
+        super(rowNum, colNum, laneNum);
+        setRecallingCharacters(new LinkedHashMap<Character, LOVlane>());
+        for (int i = 0; i < laneNum; i++)
+            getLaneCollection().add(new LOVlane(Player.getPlayer().getHeroes().get(i)));
     }
 
     public int getCurrentRow() {
@@ -37,27 +32,17 @@ public class Map {
         this.currentCol = currentCol;
     }
 
-    public int getRows() {
-        return rows;
-    }
-
-    public int getCols() {
-        return cols;
-    }
-
-    public Tile getCurrentTile() {
-        return currentTile;
-    }
-
-    public void setCurrentTile(Tile currentTile) {
-        this.currentTile = currentTile;
-    }
-
-//    public Tile getSpecificTile(int i, int j) { return tiles[i][j];}
-
-    public static Map getMap() {
+    public static LOVmap getMap(int rowNum, int colNum, int laneNum) {
         if (map == null) {
-            map = new Map();
+            map = new LOVmap(rowNum, colNum, laneNum);
+        }
+        return map;
+    }
+    
+    public static LOVmap getMap() 
+    {
+        if (map == null) {
+            map = new LOVmap(ROWNUM, COLNUM, LANENUM);
         }
         return map;
     }
@@ -65,7 +50,7 @@ public class Map {
     private String getRowDivider() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("   ");
-        for (int j = 0; j < cols; j++) {
+        for (int j = 0; j < getColNum(); j++) {
             stringBuilder.append("+-----");
         }
         return stringBuilder.append("+").toString();
@@ -77,25 +62,25 @@ public class Map {
         // we need to count from 0 to collection.size();
 
         // hero move, attack a monster
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            this.laneCollection.getNext().move();
+            getLaneCollection().getNext().move();
         }
         
         // monster turn
         // at every round each monster either attack a hero
         // or 
         // move one cell "forward"
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            this.laneCollection.getNext().moveMonster();
+            getLaneCollection().getNext().moveMonster();
         }
         
         // move characters that recalling to base
-        for(Entry<Character, Lane> recallEntry : getRecallingCharacters().entrySet())
+        for(Entry<Character, LOVlane> recallEntry : getRecallingCharacters().entrySet())
         {
             Character character = recallEntry.getKey();
-            Lane      lane      = recallEntry.getValue();
+            LOVlane      lane      = recallEntry.getValue();
             if(lane.canRecallCharacter(character)) 
             {
                 for(Coordinate cord : lane.getNexusCoordiantes())
@@ -114,9 +99,9 @@ public class Map {
         }
         
         // regain each character
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            for(Hero hero : this.laneCollection.getNext().getHerosLocationManager().getCharacters())
+            for(Hero hero : getLaneCollection().getNext().getHerosLocationManager().getCharacters())
             {
                 hero.regainAfterRound();
             }
@@ -127,19 +112,19 @@ public class Map {
     }
 
     public void checkForWin() {
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            if(this.laneCollection.getNext().checkForWin()) {
+            if(getLaneCollection().getNext().checkForWin()) {
                 Player.getPlayer().setGameOver(true);
-                System.out.println(Map.getMap().getMapString(Player.getPlayer().getHeroes().get(0), false));
+                System.out.println(getMapString(Player.getPlayer().getHeroes().get(0), false));
             }
         }
     }
 
     public void createNewMonsters() {
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            this.laneCollection.getNext().addNewMonster(Player.getPlayer().getMaxHeroLevel());
+            getLaneCollection().getNext().addNewMonster(Player.getPlayer().getMaxHeroLevel());
 
         }
     }
@@ -147,7 +132,7 @@ public class Map {
     private List<Iterator<String>> getLaneStrIters() {
         List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
 
-        for (Lane lane : laneCollection.getLaneList())
+        for (LOVlane lane : getLaneCollection().getLaneList())
             laneStrIters.add(lane.getString().iterator());
 
         return laneStrIters;
@@ -191,19 +176,19 @@ public class Map {
         return stringBuilder.toString();
     }
 
-    public void recall(Character character, Lane currentLane)
+    public void recall(Character character, LOVlane currentLane)
     {
-        this.recallingCharacters.put(character, currentLane);
+        getRecallingCharacters().put(character, currentLane);
     }
     
-    public boolean teleportToOtherLane(Character character, Coordinate org, Lane orgLane)
+    public boolean teleportToOtherLane(Character character, Coordinate org, LOVlane orgLane)
     {
         boolean    closed      = false;
-        Lane chosenLane        = null;
-        List<Lane> possibleLanes = new ArrayList<Lane>();
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        LOVlane chosenLane        = null;
+        List<LOVlane> possibleLanes = new ArrayList<LOVlane>();
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            Lane lane = this.laneCollection.getNext();
+            LOVlane lane = getLaneCollection().getNext();
             if (lane != orgLane) {
                 possibleLanes.add(lane);
             }
@@ -227,11 +212,11 @@ public class Map {
         return true;
     }
 
-    private String getTeleportOptions(Hero hero, Lane orgLane) {
+    private String getTeleportOptions(Hero hero, LOVlane orgLane) {
         List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
-        for(int i = 0; i < this.laneCollection.size(); i++)
+        for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            Lane lane = this.laneCollection.getNext();
+            LOVlane lane = getLaneCollection().getNext();
             if (lane != orgLane) {
                 laneStrIters.add(lane.getString().iterator());
             }
@@ -272,7 +257,7 @@ public class Map {
         return stringBuilder.toString();
     }
     
-    public boolean teleport(Character character, Coordinate org, Lane orgLane, Coordinate dest, Lane destLane)
+    public boolean teleport(Character character, Coordinate org, LOVlane orgLane, Coordinate dest, LOVlane destLane)
     {
         if (dest == null) {
             System.out.println("Can't teleport, no open spots in selected lane.");
@@ -289,20 +274,5 @@ public class Map {
         }
         else
             return false;
-    }
-
-    public HashMap<Character, Lane> getRecallingCharacters()
-    {
-        return recallingCharacters;
-    }
-
-    public Set<Hero> getActedHero()
-    {
-        return actedHero;
-    }
-
-    public void setActedHero(Set<Hero> actedHero)
-    {
-        this.actedHero = actedHero;
     }
 }

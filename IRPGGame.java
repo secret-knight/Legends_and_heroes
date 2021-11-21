@@ -1,5 +1,7 @@
 
-public class IRPGGame
+public interface IRPGGame
 {
+
+    boolean startGame();
 
 }

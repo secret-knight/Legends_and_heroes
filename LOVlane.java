@@ -9,14 +9,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Comparator;
 
-public class Lane {
+public class LOVlane extends AbsLane
+{
     private Tile[][] tiles;
     private CharacterLocationManager<Hero>    herosLocationManager;
     private CharacterLocationManager<Monster> monstersLocationManager;
     private final int rows = 8;
     private final int cols = 2;
 
-    public Lane(Hero hero) {
+    public LOVlane(Hero hero) {
         this.setHerosLocationManager(new CharacterLocationManager<Hero>(rows-1, 0));
         this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0, 0));
         List<Integer> placement = new ArrayList<Integer>(Collections.nCopies(3, 0));
@@ -219,16 +220,16 @@ public class Lane {
             Coordinate cord        = entry.getValue();
             Tile       currentTile = getSpecificTile(cord.getRow(), cord.getCol());
             boolean    onNexus     = currentTile instanceof Nexus;
-            if(Map.getMap().getActedHero().contains(hero)) 
+            if(LOVmap.getMap().getActedHero().contains(hero)) 
             {
                 continue;
             }
             else
             {
-                Map.getMap().getActedHero().add(hero);
+                LOVmap.getMap().getActedHero().add(hero);
             }
             while (!closed && !Player.getPlayer().isGameOver()) {
-                System.out.println(Map.getMap().getMapString(hero, onNexus));
+                System.out.println(LOVmap.getMap().getMapString(hero, onNexus));
                 String action = Utils.getValidInputString(new String[]{"w", "s", "a", "d", "e", "i", "t", "b", "f", "q", "k"});
                 switch (action) {
                 case "w":
@@ -309,10 +310,10 @@ public class Lane {
     }
 
     private boolean sendHeroBackToOrigin(Hero hero) {
-        Lane orgLane  = hero.getOrgLane();
+        LOVlane orgLane  = hero.getOrgLane();
         if (orgLane.canRecallCharacter(hero))
         {
-            Map.getMap().recall(hero, this);
+            LOVmap.getMap().recall(hero, this);
             return true;
         }
         else
@@ -398,7 +399,7 @@ public class Lane {
     
     public boolean teleport(Character character, Coordinate from)
     {
-        return Map.getMap().teleportToOtherLane(character, from, this);
+        return LOVmap.getMap().teleportToOtherLane(character, from, this);
     }
 
     public List<String> getString() {
@@ -480,9 +481,9 @@ public class Lane {
     
     public boolean equals(Object another)
     {
-        if(another instanceof Lane)
+        if(another instanceof LOVlane)
         {
-            return this.getTiles().equals(((Lane)another).getTiles());
+            return this.getTiles().equals(((LOVlane)another).getTiles());
         }
         return false;
     }
