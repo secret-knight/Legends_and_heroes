@@ -1,13 +1,9 @@
 // monster factory that creates monsters either purely random or with more inputs passed in
 public class MonsterFactory implements CharacterFactoryCreator{
 
-    private static String[] dragonNames = new String[]{"Desghidorrah", "Chrysophylax", "Bunsen Burner", "Natsunomeryu",
-            "The Scaleless", "Kas-Ethelinh", "Alexstraszan", "Phaarthurnax", "D-Maleficent", "The Weatherbe", "Igneel",
-            "Blue Eyes White"};
-    private static String[] exoskeletonNames = new String[]{"Cyrrollalee", "Brandobaris", "Big Bad-Wolf", "Wicked Witch",
-            "Aasterinian", "Chronepsish", "Kiaransalee", "St-Shargaas", "Merrshaullk", "St-Yeenoghu", "Doc Ock", "Exodia"};
-    private static String[] spiritNames = new String[]{"Andrealphus", "Blinky", "Andromalius", "Chiang-shih", "Fallen Angel",
-            "Ereshkigall", "Melchiresas", "Jormunngand", "Rakkshasass", "Taltecuhtli", "Casper"};
+    private static String[] dragonNames = PresetLoader.getInstance().getDragonNames();
+    private static String[] exoskeletonNames = PresetLoader.getInstance().getExoskeletonNames();
+    private static String[] spiritNames = PresetLoader.getInstance().getSpiritNames();
 
     // creates monster with some given input such as name and type
     @Override

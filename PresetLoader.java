@@ -245,7 +245,7 @@ public class PresetLoader
             {
                 monster = new Spirit(name, level, strength, defense, dodgeChance, spicial);
             }
-            if(fileName.contains("Exoskeletos"))
+            if(fileName.contains("Exoskeletons"))
             {
                 monster = new Exoskeleton(name, level, strength, defense, dodgeChance, spicial);
             }
@@ -487,5 +487,77 @@ public class PresetLoader
         return res.toArray(new String[res.size()]);
     }
     
+    public String[] getSpellNames(String spellKind)
+    {
+        if(spellCollection.isEmpty())
+        {
+            this.loadPreset();
+        }
+        List<String> res = new LinkedList<>();
+        for(Spell spell : spellCollection)
+        {
+            if(spell != null)
+            {
+                if((spellKind.contains("Ice") && spell instanceof IceSpell) || 
+                   (spellKind.contains("Fire") && spell instanceof FireSpell) || 
+                   (spellKind.contains("Light") && spell instanceof LightningSpell))
+                {
+                    res.add(spell.getName());
+                }
+            }
+        }
+        return res.toArray(new String[res.size()]);
+    }
     
+    public String[] getIceSpellNames()
+    {
+        return getSpellNames("Ice");
+    }
+    
+    public String[] getFireSpellNames()
+    {
+        return getSpellNames("Fire");
+    }
+    
+    public String[] getLightningSpellNames()
+    {
+        return getSpellNames("Light");
+    }
+    
+    public String[] getMonsterNames(String spellKind)
+    {
+        if(spellCollection.isEmpty())
+        {
+            this.loadPreset();
+        }
+        List<String> res = new LinkedList<>();
+        for(Monster monster : monsterCollection)
+        {
+            if(monster != null)
+            {
+                if((spellKind.contains("dragon") && monster instanceof Dragon) || 
+                   (spellKind.contains("exoskeleton") && monster instanceof Exoskeleton) || 
+                   (spellKind.contains("spirit") && monster instanceof Spirit))
+                {
+                    res.add(monster.getName());
+                }
+            }
+        }
+        return res.toArray(new String[res.size()]);
+    }
+    
+    public String[] getDragonNames()
+    {
+        return getMonsterNames("dragon");
+    }
+    
+    public String[] getExoskeletonNames()
+    {
+        return getMonsterNames("exoskeleton");
+    }
+    
+    public String[] getSpiritNames()
+    {
+        return getMonsterNames("spirit");
+    }
 }

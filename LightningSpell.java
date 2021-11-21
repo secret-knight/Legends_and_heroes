@@ -16,7 +16,7 @@ public class LightningSpell extends Spell {
         int damageWithDexterity = getDamage() + (caster.getDexterity()/10000) * getDamage();
         int defense = (int) (monster.getDefense() * 0.03);
         monster.setHp(Math.max(monster.getHp() + defense - damageWithDexterity, 0));
-        System.out.println(caster.getName() + " dealt " + (defense - damageWithDexterity) + " damage to " + monster.getName());
+        System.out.println(caster.getName() + " dealt " + Math.abs(defense - damageWithDexterity) + " damage to " + monster.getName());
 
     }
 
