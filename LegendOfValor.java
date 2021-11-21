@@ -2,11 +2,12 @@ import java.io.File;
 
 public class LegendOfValor extends AbsRPGGame
 {
-    private static final int    ROWS      = 8;
-    private static final int    COLS      = 8;
-    private static final int    NUMOFLANE = 3;
-    public  static final String GAMENAME  = "LegendsOfValor";
-    public  static final File   soundFile = new File(System.getProperty("user.dir") + "/Music/" + "music.wav");
+    private static final int    ROWS        = 8;
+    private static final int    COLS        = 8;
+    private static final int    NUMOFLANE   = 3;
+    private static final int    MONSTERFREQ = 8;
+    public  static final String GAMENAME    = "LegendsOfValor";
+    public  static final File   soundFile   = new File(System.getProperty("user.dir") + "/Music/" + "music.wav");
     private              LOVmap map;
     private              Player player;
     
@@ -28,7 +29,7 @@ public class LegendOfValor extends AbsRPGGame
         // play game
         while (!player.isGameOver()) {
             map.move();
-            if (roundsPlayed % 8 == 0) {
+            if (roundsPlayed % MONSTERFREQ == 0) {
                 map.createNewMonsters();
             }
             roundsPlayed++;

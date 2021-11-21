@@ -176,7 +176,9 @@ public class LOVlane extends AbsLane
             if (hero.act(monster)) {
                 if (monster.getHp() <= 0) {
                     System.out.println(monster.getName() + " fainted!");
-                    //TODO REWARD HERO HERE
+                    //REWARD HERO HERE
+                    hero.setMoney(hero.getMoney() + 100 * monster.getLevel());
+                    hero.setExp(hero.getExp() + 2 * monster.getLevel());
                     getMonstersLocationManager().remove(monster);
                     Tile t = getTiles()[closestMonsterCoord.getRow()][closestMonsterCoord.getCol()];
                     t.removeCharacter(monster);
