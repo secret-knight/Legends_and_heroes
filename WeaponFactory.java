@@ -1,7 +1,6 @@
 // given a set of names, weapons are created with random attributes given a level
 public class WeaponFactory implements ItemFactoryCreator {
-    private static String[] weaponNames = new String[]{"Sword", "Bow", "Scythe",
-            "Axe", "TSwords", "Dagger"};
+    private static String[] weaponNames = PresetLoader.getInstance().getWeaponNames();
     private static boolean[] weaponHands = new boolean[]{false, true, true, false, true, false};
 
     @Override

@@ -11,12 +11,9 @@ public class HeroSelection {
 
     private HeroSelection() {
 
-        String[] warriorNames = new String[]{"Gaerdal Ironhand", "Sehanine Monnbow", "Muamman Duathall",
-                "Flandal Steelskin", "Undefeated Yoj", "Eunoia Cyn"};
-        String[] sorcererNames = new String[]{"Rillifane Rallathil", "Segojan Earthcaller", "Reign Havoc",
-                "Reverie Ashels", "Kalabar", "Skye Soar"};
-        String[] paladinNames = new String[]{"Parzival", "Drako Delirious", "Skoraeus Stonebones",
-                "Garl Glittergold ", "Amaryllis Astra", "Caliber Heist"};
+        String[] warriorNames = PresetLoader.getInstance().getWarriorNames();
+        String[] sorcererNames = PresetLoader.getInstance().getSorcererNames();
+        String[] paladinNames = PresetLoader.getInstance().getPaladinNames();
 
         // create heroes to pick from using factories
         for (int i = 0; i < 6; i++) {

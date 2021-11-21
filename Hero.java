@@ -22,6 +22,17 @@ public abstract class Hero extends Character {
         agility = heroAgility;
         inventory = new Inventory();
     }
+    
+    public Hero(String heroName, int heroLvl, int mana, int money, int exp, int heroStrength, int heroDexterity, int heroAgility) {
+        super(heroName, heroLvl);
+        mana = heroLvl*500;
+        money = heroLvl*3000;
+        exp = (heroLvl - 1 ) * 10 + 5;
+        strength = heroStrength;
+        dexterity = heroDexterity;
+        agility = heroAgility;
+        inventory = new Inventory();
+    }
 
     public Hero(String heroName, int heroLvl, int baseSkill) {
         this(heroName, heroLvl, baseSkill, baseSkill, baseSkill);
