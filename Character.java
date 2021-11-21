@@ -7,7 +7,7 @@ public abstract class Character implements Fightable{
     private int level;
     private int hp;
     private Map<Attribute, Integer> buffedAtt; 
-    private Lane orgLane;
+    private LOVlane orgLane;
     
     public Character(String heroName, int heroLvl) {
         name = heroName;
@@ -63,12 +63,12 @@ public abstract class Character implements Fightable{
         return res;
     }
 
-    public Lane getOrgLane()
+    public LOVlane getOrgLane()
     {
         return this.orgLane;
     }
     
-    public void setOrgLane(Lane lane)
+    public void setOrgLane(LOVlane lane)
     {
         this.orgLane = lane;
     }
