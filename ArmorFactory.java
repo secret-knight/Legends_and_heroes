@@ -1,7 +1,6 @@
 // given a set of names, armor is created with random attributes given a level
 public class ArmorFactory implements ItemFactoryCreator{
-    private static String[] armorNames = new String[]{"Platinum Shield", "Breastplate", "Full Body Armor",
-            "Wizard Shield", "Guardian Angel", "Golden Shield"};
+    private static String[] armorNames = PresetLoader.getInstance().getArmorNames();
 
     @Override
     public Item createItem(int level, int i) {

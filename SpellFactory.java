@@ -1,11 +1,11 @@
 // given a set of names, spells are created with random attributes given a level
+/**
+ * factory that instantiate spells
+ */
 public class SpellFactory implements ItemFactoryCreator {
-    private static String[] iceSpellNames = new String[]{"Snow Cannon", "Ice Blade", "Frost Blizzard",
-            "Arctic Storm", "Brain Freeze", "Polar Blast"};
-    private static String[] fireSpellNames = new String[]{"Flame Tornado", "Breath of Fire", "Heat Wave",
-            "Lava Comet", "Hell Storm", "Inferno"};
-    private static String[] lightningSpellNames = new String[]{"Lightning Dagger", "Thunder Blast",
-            "Electric Arrows", "Spark Needles", "Shock Wave", "Paralysis"};
+    private static String[] iceSpellNames = PresetLoader.getInstance().getIceSpellNames();
+    private static String[] fireSpellNames = PresetLoader.getInstance().getFireSpellNames();
+    private static String[] lightningSpellNames = PresetLoader.getInstance().getLightningSpellNames();
 
     @Override
     public Item createItem(int level, int i) {

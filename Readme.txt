@@ -2,6 +2,14 @@ Name: Paul Menexas
 Email: pmenexas@bu.edu
 BU ID: U78320172
 
+Name: Hui Zheng
+Email: tommzy@bu.edu
+BU ID: U80896784
+
+Name: Likhitha Reddy Boyapati
+Email: likhitha@bu.edu
+BU ID: U98738276
+
 Compilation Instructions:
 
 1) Set your working directory so that it holds the submitted java files.
@@ -10,14 +18,22 @@ Compilation Instructions:
 
 That's it, then play.
 
-Notes / Potential Extra Credit:
+Potential Extra Credit and Notes:
+Note: would be better to run with a colored console. 
 
-There are no txt files used, everything is contained within java files.
+1.Txt files used, and parsed to presets
 
-Print statements that are useful to the user such as can't move in a direction, can't buy an item, etc are printed first
+2.Color of title and cell. The map is color coordinated.
+
+3.Print statements that are useful to the user such as can't move in a direction, can't buy an item, etc are printed first
 and then the same screen is reprinted. Please make the screen small enough to see the messages or scroll up a bit. There
 are tons of user safety with clear messages.
 
+4.LOV game has BGM
+
+5. AsciiArt: LOV Tile, you win, and game over
+
+6. Design patterns
 The Singleton method is used for both the Map and the Player, both of which should only have a single global method.
 
 The Factory method was used to create Heroes for the selection process in the beginning so a Player always has different
@@ -34,7 +50,6 @@ starting point to make sure that all other accessible tiles have a potential pat
 the case where a player starts trapped but it also makes sure the map doesn't have wasted space that isn't reachable
 at all.
 
-The map is color coordinated, I don't know what that counts for lol.
 
 Check bottom of file for some game design choices, separate from OO design.
 
@@ -86,7 +101,7 @@ inventory for specific items. There also some general static methods used for pr
 Market - A class that allows a Player to buy / sell items for each of their heroes. The market screen lives in this file
 and a new Market is generated every time it is entered, each time with new items thanks to factories.
 
-Map - This class uses the Singleton method, and it represents the map of the game. It is with the map that a player can
+LovMap - This class uses the Singleton method, and it represents the map of the game. It is with the map that a player can
 switch between tiles and the map screen is printed.
 
 Tile - An enum that contains the different types of tiles that exist within the game. It is within here that they get
@@ -121,7 +136,59 @@ spells to buy.
 
 Main - This class runs the program by creating a player and a map, and then letting the player play until the game is over.
 
+MainView: Main entrance view of the game. present using System.out.print...
+
 Utils - This class holds some global helper functions and global instances of useful objects.
+
+Tile: This is the parent class that represents an individual tile in the game. Six subclasses extend from this abstract class.
+
+    Nexus: this is the subclass of tile class. Heroes and monsters spawn from these cells.
+
+    Inaccessible: This is also a subclass of tile class. The heroes and monsters cannot move into these cells at any point of the game
+
+    Plain: a subclass of tile which has no specific attribute
+
+    Bush : a subclass of tile where the dexterity of hero increases by 10% as long as the hero is in the bush tile
+
+    Cave:  a subclass of tile where the agility of hero increases by 10% as long as the hero is in the cave tile
+
+    Koulou: a subclass of tile where the strength of hero increases by 10% as long as the hero is in the koulou tile
+
+AbsLane: abstract class of Lane share common basic members of Lane such as array of Tiles.
+
+LovLane: lane class that serve for LOV game. This class has the arrangement of tiles in two coloums. Each lane has a width of two  cells. 
+
+LaneCollection : Works as Collection and Iterator, performs functions on the lanes like adding lanes, getting size of lanes
+
+Coordinate: This class gives the exact position which is the row and column of the character.
+
+CharacterLocationManager: this class manages the locations of the characters according to the constraints. For example we have a condition saying we cannot have two heroes or monsters in the same lane, and hero and monster cannot pass by each other.
+
+AbsMap: Abstract class of map for rpg game 
+
+IRPGGame: interface that define behavior of RPG game
+
+AbsRPGGame: Abstract class that holding basic member of RPG game so far
+
+RPGGameFactory: factory class that only create RPG games
+
+AsciiArt: asciiart constant class
+
+BGM: class that can start a thread and play bgm
+
+GameController: controller that manage different games, start them and how they interact with main screen
+
+IGame: most basic game type interface
+
+LegendOfValor: main game class for LOV game entity. defines how game start, how game rotate terns.
+
+PresetLoader: create game entities instances based on config txt files 
+
+Test Folders: 
+ConfigFiles: contains preset in txt
+Music: contains bgm in wav
+
+Usable: Usable class has items that a hero can use on them
 
 Game Design Notes:
 
@@ -130,5 +197,3 @@ For equipment, a Hero can either have a one-handed weapon and armor equipped at 
 If the heroes win the fight, fainted heroes that are revived are given full health back.
 
 There is no defense stat for Heroes, just like the specification. The armor, if equipped, serves as a Hero's defense.
-
-Aside from this, the game matches the assignment description.

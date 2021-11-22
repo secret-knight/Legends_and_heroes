@@ -8,16 +8,21 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Map.Entry;
 
+/**
+ * GPS system like class that manage character movement validity
+ * prioritize character depends on how far they move
+ * @param <T>
+ */
 public class CharacterLocationManager <T extends Character>
 {
     private HashMap<T, Coordinate> characters;
     private PriorityQueue<T>       locationsPQ;
     private Coordinate             origin;
     
-//    /**
-//     * constructor
-//     * @param origin
-//     */
+    /**
+     * constructor
+     * @param origin
+     */
     public CharacterLocationManager(int originRow, int originCol)
     {
         this(new Coordinate(originRow, originCol));

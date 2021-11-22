@@ -1,5 +1,8 @@
 import java.util.List;
 
+/**
+ * spell class that abstract spell common basic member and function
+ */
 public abstract class Spell extends Item implements Castable {
     private int damage;
     private int requiredMana;

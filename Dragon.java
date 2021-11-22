@@ -5,6 +5,11 @@ public class Dragon extends Monster{
         super(monsterName, monsterLvl);
         setFavoredStat(m);
     }
+    
+    public Dragon(String monsterName, int monsterLvl, int monsterDamage, int monsterDefense, int monsterDodge, float m) {
+        super(monsterName, monsterLvl, monsterDamage, monsterDefense, monsterDodge);
+        setFavoredStat(m);
+    }
 
     public Dragon(float m) {
         super();
