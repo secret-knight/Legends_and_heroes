@@ -1,3 +1,5 @@
+Name
+-------------------------------------------------------------------------------------------------
 Name: Paul Menexas
 Email: pmenexas@bu.edu
 BU ID: U78320172
@@ -11,16 +13,18 @@ Email: likhitha@bu.edu
 BU ID: U98738276
 
 Compilation Instructions:
-
+-------------------------------------------------------------------------------------------------
 1) Set your working directory so that it holds the submitted java files.
 2) Run > javac *.java
 3) Run > java Main
 
 That's it, then play.
 
-Potential Extra Credit and Notes:
+Notes & Potential Extra Credit and Notes:
+-------------------------------------------------------------------------------------------------
 Note: would be better to run with a colored console. 
 
+Potential Extra Credit and Notes:
 1.Txt files used, and parsed to presets
 
 2.Color of title and cell. The map is color coordinated.
@@ -54,7 +58,7 @@ at all.
 Check bottom of file for some game design choices, separate from OO design.
 
 Class Descriptions:
-
+-------------------------------------------------------------------------------------------------
 Player - This class uses the Singleton method, and it represents the user who actually is playing. The Player picks and
 chooses their heroes and then plays the game with them.
 
@@ -190,7 +194,9 @@ Music: contains bgm in wav
 
 Usable: Usable class has items that a hero can use on them
 
+
 Game Design Notes:
+-------------------------------------------------------------------------------------------------
 
 For equipment, a Hero can either have a one-handed weapon and armor equipped at the same time or just a two-handed weapon.
 
