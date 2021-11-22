@@ -1,4 +1,7 @@
 
+/**
+ * util class for encap row + col combo
+ */
 public class Coordinate
 {
     private int row;

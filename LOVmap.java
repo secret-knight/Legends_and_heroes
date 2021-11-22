@@ -11,9 +11,9 @@ public class LOVmap extends AbsMap{
     private static final int                      LANENUM     = 3;
     private LOVmap(int rowNum, int colNum, int laneNum) {
         super(rowNum, colNum, laneNum);
-        setRecallingCharacters(new LinkedHashMap<Character, LOVlane>());
+        setRecallingCharacters(new LinkedHashMap<Character, LOVLane>());
         for (int i = 0; i < laneNum; i++)
-            getLaneCollection().add(new LOVlane(Player.getPlayer().getHeroes().get(i)));
+            getLaneCollection().add(new LOVLane(Player.getPlayer().getHeroes().get(i)));
     }
 
     public int getCurrentRow() {
@@ -77,10 +77,10 @@ public class LOVmap extends AbsMap{
         }
         
         // move characters that recalling to base
-        for(Entry<Character, LOVlane> recallEntry : getRecallingCharacters().entrySet())
+        for(Entry<Character, LOVLane> recallEntry : getRecallingCharacters().entrySet())
         {
             Character character = recallEntry.getKey();
-            LOVlane      lane      = recallEntry.getValue();
+            LOVLane      lane      = recallEntry.getValue();
             if(lane.canRecallCharacter(character)) 
             {
                 for(Coordinate cord : lane.getNexusCoordiantes())
@@ -132,7 +132,7 @@ public class LOVmap extends AbsMap{
     private List<Iterator<String>> getLaneStrIters() {
         List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
 
-        for (LOVlane lane : getLaneCollection().getLaneList())
+        for (LOVLane lane : getLaneCollection().getLaneList())
             laneStrIters.add(lane.getString().iterator());
 
         return laneStrIters;
@@ -176,19 +176,19 @@ public class LOVmap extends AbsMap{
         return stringBuilder.toString();
     }
 
-    public void recall(Character character, LOVlane currentLane)
+    public void recall(Character character, LOVLane currentLane)
     {
         getRecallingCharacters().put(character, currentLane);
     }
     
-    public boolean teleportToOtherLane(Character character, Coordinate org, LOVlane orgLane)
+    public boolean teleportToOtherLane(Character character, Coordinate org, LOVLane orgLane)
     {
         boolean    closed      = false;
-        LOVlane chosenLane        = null;
-        List<LOVlane> possibleLanes = new ArrayList<LOVlane>();
+        LOVLane chosenLane        = null;
+        List<LOVLane> possibleLanes = new ArrayList<LOVLane>();
         for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            LOVlane lane = getLaneCollection().getNext();
+            LOVLane lane = getLaneCollection().getNext();
             if (lane != orgLane) {
                 possibleLanes.add(lane);
             }
@@ -212,11 +212,11 @@ public class LOVmap extends AbsMap{
         return true;
     }
 
-    private String getTeleportOptions(Hero hero, LOVlane orgLane) {
+    private String getTeleportOptions(Hero hero, LOVLane orgLane) {
         List<Iterator<String>> laneStrIters = new ArrayList<Iterator<String>>();
         for(int i = 0; i < getLaneCollection().size(); i++)
         {
-            LOVlane lane = getLaneCollection().getNext();
+            LOVLane lane = getLaneCollection().getNext();
             if (lane != orgLane) {
                 laneStrIters.add(lane.getString().iterator());
             }
@@ -257,7 +257,7 @@ public class LOVmap extends AbsMap{
         return stringBuilder.toString();
     }
     
-    public boolean teleport(Character character, Coordinate org, LOVlane orgLane, Coordinate dest, LOVlane destLane)
+    public boolean teleport(Character character, Coordinate org, LOVLane orgLane, Coordinate dest, LOVLane destLane)
     {
         if (dest == null) {
             System.out.println("Can't teleport, no open spots in selected lane.");

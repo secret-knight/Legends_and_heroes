@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * light spell entity
+ */
 public class LightningSpell extends Spell {
 
     public LightningSpell(String spellName, int spellPrice, int spellMinLevel,int spellDamage,

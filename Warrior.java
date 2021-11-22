@@ -1,3 +1,6 @@
+/**
+ * Hero:warrior
+ */
 public class Warrior extends Hero{
 
     public Warrior(String heroName, int heroLvl, float m1, float m2) {

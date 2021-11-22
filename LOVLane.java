@@ -9,7 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Comparator;
 
-public class LOVlane extends AbsLane
+/**
+ * lane class that serve for LOV game
+ */
+public class LOVLane extends AbsLane
 {
     
     private CharacterLocationManager<Hero>    herosLocationManager;
@@ -17,7 +20,7 @@ public class LOVlane extends AbsLane
     private static final int ROWNUM = 8;
     private static final int COLNUM = 2;
 
-    public LOVlane(Hero hero) {
+    public LOVLane(Hero hero) {
         super(ROWNUM, COLNUM);
         this.setHerosLocationManager(new CharacterLocationManager<Hero>(ROWNUM-1, 0));
         this.setMonstersLocationManager(new CharacterLocationManager<Monster>(0, 0));
@@ -108,7 +111,7 @@ public class LOVlane extends AbsLane
 
         if (getHerosLocationManager().getFurthermostDistance() == ROWNUM - 1) {
             System.out.println("The heroes have won!");
-            System.out.println(AsciiArt.YOUWON);
+            System.out.println(AsciiArt.YOUWIN);
             return true;
         }
 
@@ -302,7 +305,7 @@ public class LOVlane extends AbsLane
     }
 
     private boolean sendHeroBackToOrigin(Hero hero) {
-        LOVlane orgLane  = hero.getOrgLane();
+        LOVLane orgLane  = hero.getOrgLane();
         if (orgLane.canRecallCharacter(hero))
         {
             LOVmap.getMap().recall(hero, this);
@@ -473,9 +476,9 @@ public class LOVlane extends AbsLane
     
     public boolean equals(Object another)
     {
-        if(another instanceof LOVlane)
+        if(another instanceof LOVLane)
         {
-            return this.getTiles().equals(((LOVlane)another).getTiles());
+            return this.getTiles().equals(((LOVLane)another).getTiles());
         }
         return false;
     }

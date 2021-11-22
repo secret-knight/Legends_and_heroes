@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * create game entities instances based on config txt files 
+ */
 public class PresetLoader
 {
     private List<Armor>   armorCollection;

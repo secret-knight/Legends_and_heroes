@@ -2,6 +2,9 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.LineEvent.Type;
+/**
+ * static class that can start a thread and play bgm
+ */
 public class BGM
 {
     public static synchronized void playClip(File clipFile) 

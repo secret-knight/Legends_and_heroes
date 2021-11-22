@@ -1,0 +1,32 @@
+For the Legends of Valor assignment, we felt that both Paul and Tommzy's individual submissions had many good aspects.
+We agreed that from a codebase perspective, Paul's submission had more of a focus on detail and user experience. Since
+UI in the terminal is especially tedious to implement, we decided to move forward with Paul's submission as our initial
+code. The idea was to start with Paul's project that had a smooth user experience, fix the minor bugs he didn't have time
+to fix in the previous assignment, and then switch over to the new implementation.
+
+The object oriented design was well implemented and just needed a bit of a touch up, mainly an encapsulation of the game as
+a whole and a class to represent a GPS. The new map was easy to implement from Paul's codebase and only required minor
+changes. We moved from an Enum design for Tiles of the map to a class design so we could introduce the stat buffing
+functionality more naturally. From there, we then updated basic movement and switched the fight interaction from being
+multiple rounds between heroes and monsters to just a single interaction between a monster and a hero. Therefore, the
+decision moved from the Player to each hero and monster. This as well as the market were extremely easy to switch to
+given Paul's code.
+
+When it comes to OO design, we utilizied the outer game encapsulation seen in Tommzy's code by creating an RPG and LOV
+class. The Main class now utilizes a GameController object to play the game. In addition, we utilized the GPS systems
+seen in Tommzy's submission. They are created under the CharacterLocationManager object class. This class was crucial
+for keeping track of the current state of a given lane and ultimately of the map. This design choice became particularly
+useful for the teleport and back functions. Another piece taken from Tommzy's submission was the general abstraction of
+the map. We have a general abstract map class and LOV map class so that code is more reusable for potential extensions.
+Lastly, loading preset values from txt files for the Heroes, Monsters, and Items was also taken from Tommzy's code. This
+was merged with Paul's factory implementations so that we have the best of both worlds, more customizable and more
+reusable.
+
+In general, we used best OO design practices. We kept the Singleton instances for the map and player objects from Paul's
+implementation. Interfaces were used when useful and inheritance was thought through in detail. Overall, we tried to
+combine the best of both codebases.
+
+Post fact, we believed our approach was solid. We avoided redundant work and the way we utilized our previous code, the
+transition was straightforward and not difficult at all. Both codebases we used were good standalone, but we believe our
+work for this assignment was great because we used the best pieces from each implementation. Our UI is smooth, there are
+no bugs we are aware of, we implemented all bonus aspects, and our class structure is thorough.

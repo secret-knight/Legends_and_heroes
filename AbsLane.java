@@ -1,4 +1,7 @@
 
+/**
+ * abstract class of Lane
+ */
 public abstract class AbsLane
 {
     private Tile[][] tiles;

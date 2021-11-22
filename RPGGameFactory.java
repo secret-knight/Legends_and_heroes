@@ -1,6 +1,9 @@
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * factory class that only create RPG games
+ */
 public class RPGGameFactory{
     private Set<String> gameNames;
     private String[] perLoadGames = new String[] {LegendOfValor.GAMENAME};

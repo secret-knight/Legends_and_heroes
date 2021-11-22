@@ -1,3 +1,6 @@
+/**
+ * Paladin entity
+ */
 public class Paladin extends Hero{
 
     public Paladin(String heroName, int heroLvl, float m1, float m2) {
