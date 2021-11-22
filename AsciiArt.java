@@ -17,7 +17,7 @@ public class AsciiArt
             + ""
             + "\u001b[0m";
     
-    public static final String YOUWON = 
+    public static final String YOUWIN = 
             "\u001B[35m" + 
             "Y88b   d88P  .d88888b.  888     888      888       888 8888888 888b    888 888 888 888 \r\n"
             + " Y88b d88P  d88P\" \"Y88b 888     888      888   o   888   888   8888b   888 888 888 888 \r\n"

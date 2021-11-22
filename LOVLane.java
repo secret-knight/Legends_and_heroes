@@ -111,7 +111,7 @@ public class LOVLane extends AbsLane
 
         if (getHerosLocationManager().getFurthermostDistance() == ROWNUM - 1) {
             System.out.println("The heroes have won!");
-            System.out.println(AsciiArt.YOUWON);
+            System.out.println(AsciiArt.YOUWIN);
             return true;
         }
 
